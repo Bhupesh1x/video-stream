@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useAuth, useClerk } from "@clerk/nextjs";
 import { FlameIcon, HomeIcon, PlaySquareIcon } from "lucide-react";
 
 import {
@@ -30,6 +31,9 @@ const routes = [
 ];
 
 export function MainSection() {
+  const clerk = useClerk();
+  const { isSignedIn } = useAuth();
+
   return (
     <SidebarGroup>
       <SidebarMenu>
@@ -39,7 +43,12 @@ export function MainSection() {
               asChild
               tooltip={route.title}
               isActive={false}
-              onClick={() => {}}
+              onClick={(e) => {
+                if (!isSignedIn && route?.auth) {
+                  e.preventDefault();
+                  clerk.openSignIn();
+                }
+              }}
             >
               <Link href={route.url} className="flex items-center gap-4">
                 <route.icon />
