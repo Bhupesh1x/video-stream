@@ -1,7 +1,22 @@
-export default function Home() {
+import { HydrateClient, trpc } from "@/trpc/server";
+
+import { HomeView } from "@/features/home/components/HomeView";
+
+type Props = {
+  searchParams: Promise<{
+    categoryId?: string;
+  }>;
+};
+
+async function Page({ searchParams }: Props) {
+  const { categoryId } = await searchParams;
+  void trpc.categories.getMany.prefetch();
+
   return (
-    <div>
-      <h1>Home Page</h1>
-    </div>
+    <HydrateClient>
+      <HomeView categoryId={categoryId} />
+    </HydrateClient>
   );
 }
+
+export default Page;
