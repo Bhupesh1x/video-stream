@@ -7,7 +7,7 @@ import {
   UserButton,
   ClerkLoading,
 } from "@clerk/nextjs";
-import { UserCircle } from "lucide-react";
+import { ClapperboardIcon, UserCircle } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
@@ -18,7 +18,16 @@ export function AuthButton() {
         <div className="size-8 bg-gray-200 rounded-full" />
       </ClerkLoading>
       <SignedIn>
-        <UserButton />
+        <UserButton>
+          <UserButton.MenuItems>
+            <UserButton.Link
+              href="/studio"
+              label="Studio"
+              labelIcon={<ClapperboardIcon className="size-4" />}
+            />
+            <UserButton.Action label="manageAccount" />
+          </UserButton.MenuItems>
+        </UserButton>
       </SignedIn>
       <SignedOut>
         <SignInButton mode="modal">
