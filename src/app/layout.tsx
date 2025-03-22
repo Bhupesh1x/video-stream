@@ -4,6 +4,8 @@ import { ClerkProvider } from "@clerk/nextjs";
 
 import { TRPCProvider } from "@/trpc/client";
 
+import { Toaster } from "@/components/ui/sonner";
+
 import "./globals.css";
 
 const font = Inter({
@@ -24,7 +26,10 @@ export default function RootLayout({
     <ClerkProvider afterSignOutUrl="/">
       <html lang="en">
         <body className={font.className}>
-          <TRPCProvider>{children}</TRPCProvider>
+          <TRPCProvider>
+            <Toaster />
+            {children}
+          </TRPCProvider>
         </body>
       </html>
     </ClerkProvider>
