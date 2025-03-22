@@ -17,7 +17,10 @@ export function InfiniteScroll({
   isFetchingNextPage,
   fetchNextPage,
 }: Props) {
-  const { targetRef, isIntersecting } = useIntersectionObserver();
+  const { targetRef, isIntersecting } = useIntersectionObserver({
+    threshold: 0.5,
+    rootMargin: "100px",
+  });
 
   useEffect(() => {
     if (hasNextPage && isIntersecting && !isFetchingNextPage && !isManual) {
