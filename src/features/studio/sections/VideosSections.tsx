@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { format } from "date-fns";
+import { Globe2Icon, LockIcon } from "lucide-react";
 import { ErrorBoundary } from "react-error-boundary";
 
 import { trpc } from "@/trpc/client";
@@ -19,8 +20,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Skeleton } from "@/components/ui/skeleton";
 import { InfiniteScroll } from "@/components/InfiniteScroll";
-import { Globe2Icon, LockIcon } from "lucide-react";
 
 function VideosSectionSuspence() {
   const [videos, query] = trpc.studio.getMany.useSuspenseInfiniteQuery(
@@ -96,9 +97,9 @@ function VideosSectionSuspence() {
                   <TableCell>
                     {format(new Date(video.createdAt), "d MMM yyyy")}
                   </TableCell>
-                  <TableCell>views</TableCell>
-                  <TableCell>comments</TableCell>
-                  <TableCell>likes</TableCell>
+                  <TableCell className="text-right">views</TableCell>
+                  <TableCell className="text-right">comments</TableCell>
+                  <TableCell className="text-right pr-6">likes</TableCell>
                 </TableRow>
               </Link>
             ))}
@@ -114,9 +115,64 @@ function VideosSectionSuspence() {
   );
 }
 
+function VideoSectionSkeleton() {
+  return (
+    <div>
+      <Table className="border-y">
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-[410px] pl-6">Video</TableHead>
+            <TableHead>Visibility</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead>Date</TableHead>
+            <TableHead className="text-right">Views</TableHead>
+            <TableHead className="text-right">Comments</TableHead>
+            <TableHead className="text-right pr-6">Likes</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {Array.from({ length: 2 }).map((_, index) => (
+            <TableRow className="cursor-pointer" key={index}>
+              <TableCell>
+                <div className="flex items-center gap-3">
+                  <div className="w-36 shrink-0">
+                    <Skeleton className="aspect-video rounded-xl" />
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <Skeleton className="h-4 w-16" />
+                    <Skeleton className="h-4 w-18" />
+                  </div>
+                </div>
+              </TableCell>
+              <TableCell>
+                <Skeleton className="h-4 w-18" />
+              </TableCell>
+              <TableCell>
+                <Skeleton className="h-4 w-10" />
+              </TableCell>
+              <TableCell>
+                <Skeleton className="h-4 w-24" />
+              </TableCell>
+              <TableCell className="text-right">
+                <Skeleton className="h-4 w-14 ml-auto" />
+              </TableCell>
+              <TableCell className="text-right">
+                <Skeleton className="h-4 w-14 ml-auto" />
+              </TableCell>
+              <TableCell className="text-right pr-6">
+                <Skeleton className="h-4 w-14 ml-auto" />
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
+  );
+}
+
 export function VideosSection() {
   return (
-    <Suspense fallback={<p>Loading...</p>}>
+    <Suspense fallback={<VideoSectionSkeleton />}>
       <ErrorBoundary fallback={<p>Error</p>}>
         <VideosSectionSuspence />
       </ErrorBoundary>
