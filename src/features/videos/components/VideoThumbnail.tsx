@@ -29,6 +29,7 @@ export function VideoThumbnail({
 
         <Image
           fill
+          unoptimized={!!previewUrl}
           src={previewUrl ? previewUrl : "/images/placeholder.svg"}
           alt={title}
           className="h-full w-full object-contain bg-gray-200 opacity-0 group-hover:opacity-100"
