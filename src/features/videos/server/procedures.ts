@@ -11,6 +11,16 @@ export const videoRouter = createTRPCRouter({
       new_asset_settings: {
         playback_policy: ["public"],
         passthrough: userId,
+        input: [
+          {
+            generated_subtitles: [
+              {
+                language_code: "en",
+                name: "English",
+              },
+            ],
+          },
+        ],
       },
       cors_origin: "*",
     });

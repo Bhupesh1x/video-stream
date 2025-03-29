@@ -20,6 +20,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { InfiniteScroll } from "@/components/InfiniteScroll";
+import { Globe2Icon, LockIcon } from "lucide-react";
 
 function VideosSectionSuspence() {
   const [videos, query] = trpc.studio.getMany.useSuspenseInfiniteQuery(
@@ -79,7 +80,16 @@ function VideosSectionSuspence() {
                       </div>
                     </div>
                   </TableCell>
-                  <TableCell>visibility</TableCell>
+                  <TableCell>
+                    <div className="flex items-center">
+                      {video.visibility === "private" ? (
+                        <LockIcon className="size-4 mr-2" />
+                      ) : (
+                        <Globe2Icon className="size-4 mr-2" />
+                      )}
+                      {snakeCaseToTitle(video.visibility)}
+                    </div>
+                  </TableCell>
                   <TableCell>
                     {snakeCaseToTitle(video.muxStatus || "error")}
                   </TableCell>

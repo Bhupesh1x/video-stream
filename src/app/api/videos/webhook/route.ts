@@ -95,7 +95,7 @@ export async function POST(request: Request) {
       break;
     }
     case "video.asset.errored": {
-      const data = payload.data as VideoAssetReadyWebhookEvent["data"];
+      const data = payload.data as VideoAssetErroredWebhookEvent["data"];
 
       if (!data.upload_id) {
         return new NextResponse("Upload id not found", { status: 400 });
@@ -111,13 +111,36 @@ export async function POST(request: Request) {
       break;
     }
     case "video.asset.deleted": {
-      const data = payload.data as VideoAssetReadyWebhookEvent["data"];
+      const data = payload.data as VideoAssetDeletedWebhookEvent["data"];
 
       if (!data.upload_id) {
         return new NextResponse("Upload id not found", { status: 400 });
       }
 
       await db.delete(videos).where(eq(videos.muxUploadId, data.upload_id));
+
+      break;
+    }
+    case "video.asset.track.ready": {
+      const data = payload.data as VideoAssetTrackReadyWebhookEvent["data"] & {
+        asset_id: string;
+      };
+
+      const assetId = data.asset_id;
+      const trackId = data.id;
+      const status = data.status;
+
+      if (!assetId) {
+        return new NextResponse("Asset id not found", { status: 400 });
+      }
+
+      await db
+        .update(videos)
+        .set({
+          muxTrackStatus: status,
+          muxTrackId: trackId,
+        })
+        .where(eq(videos.muxAssetId, assetId));
 
       break;
     }
