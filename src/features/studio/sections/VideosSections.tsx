@@ -52,7 +52,11 @@ function VideosSectionSuspence() {
                 <TableRow className="cursor-pointer">
                   <TableCell>
                     <div className="w-36 shrink-0">
-                      <VideoThumbnail thumbnailImageUrl={video.thumbnailUrl} />
+                      <VideoThumbnail
+                        title={video.title}
+                        previewUrl={video.previewUrl}
+                        thumbnailImageUrl={video.thumbnailUrl}
+                      />
                     </div>
                   </TableCell>
                   <TableCell>visibility</TableCell>
