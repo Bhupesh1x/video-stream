@@ -45,7 +45,7 @@ export async function POST(request: Request) {
   );
 
   switch (payload.type as WebhookEvent["type"]) {
-    case "video.asset.created":
+    case "video.asset.created": {
       const data = payload.data as VideoAssetCreatedWebhookEvent["data"];
 
       if (!data.upload_id) {
@@ -60,6 +60,34 @@ export async function POST(request: Request) {
         })
         .where(eq(videos.muxUploadId, data.upload_id));
       break;
+    }
+    case "video.asset.ready": {
+      const data = payload.data as VideoAssetReadyWebhookEvent["data"];
+
+      const playbackId = data.playback_ids?.[0]?.id ?? "";
+
+      if (!playbackId) {
+        return new NextResponse("Playback id not found", { status: 400 });
+      }
+
+      if (!data.upload_id) {
+        return new NextResponse("Upload id not found", { status: 400 });
+      }
+
+      const thumbnailUrl = `https://image.mux.com/${playbackId}/thumbnail.png`;
+
+      await db
+        .update(videos)
+        .set({
+          muxStatus: data.status,
+          thumbnailUrl: thumbnailUrl,
+          muxAssetId: data.id,
+          muxPlaybackId: playbackId,
+        })
+        .where(eq(videos.muxUploadId, data.upload_id));
+
+      break;
+    }
   }
 
   return new Response("Webhook received", { status: 200 });

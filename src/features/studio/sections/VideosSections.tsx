@@ -16,6 +16,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { InfiniteScroll } from "@/components/InfiniteScroll";
+import { VideoThumbnail } from "@/features/videos/components/VideoThumbnail";
 
 function VideosSectionSuspence() {
   const [videos, query] = trpc.studio.getMany.useSuspenseInfiniteQuery(
@@ -30,7 +31,7 @@ function VideosSectionSuspence() {
       <Table className="border-y">
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[510px] pl-6">Video</TableHead>
+            <TableHead className="w-[410px] pl-6">Video</TableHead>
             <TableHead>Visibility</TableHead>
             <TableHead>Status</TableHead>
             <TableHead>Date</TableHead>
@@ -49,7 +50,11 @@ function VideosSectionSuspence() {
                 legacyBehavior
               >
                 <TableRow className="cursor-pointer">
-                  <TableCell>{video.title}</TableCell>
+                  <TableCell>
+                    <div className="w-36 shrink-0">
+                      <VideoThumbnail thumbnailImageUrl={video.thumbnailUrl} />
+                    </div>
+                  </TableCell>
                   <TableCell>visibility</TableCell>
                   <TableCell>status</TableCell>
                   <TableCell>date</TableCell>
