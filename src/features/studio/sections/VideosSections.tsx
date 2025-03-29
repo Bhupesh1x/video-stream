@@ -56,6 +56,7 @@ function VideosSectionSuspence() {
                         title={video.title}
                         previewUrl={video.previewUrl}
                         thumbnailImageUrl={video.thumbnailUrl}
+                        duration={video.duration || 0}
                       />
                     </div>
                   </TableCell>

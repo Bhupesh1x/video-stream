@@ -1,13 +1,17 @@
 import Image from "next/image";
 
+import { formatDuration } from "@/lib/utils";
+
 type Props = {
   title: string;
+  duration?: number;
   previewUrl?: string | null;
   thumbnailImageUrl?: string | null;
 };
 
 export function VideoThumbnail({
   title,
+  duration,
   previewUrl,
   thumbnailImageUrl,
 }: Props) {
@@ -29,6 +33,10 @@ export function VideoThumbnail({
           alt={title}
           className="h-full w-full object-contain bg-gray-200 opacity-0 group-hover:opacity-100"
         />
+
+        <div className="bg-black/80 py-0.5 px-1 absolute bottom-2 right-2 text-white text-xs font-medium rounded">
+          {formatDuration(duration ?? 0)}
+        </div>
       </div>
     </div>
   );
