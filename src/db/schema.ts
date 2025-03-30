@@ -1,4 +1,9 @@
 import {
+  createInsertSchema,
+  createUpdateSchema,
+  createSelectSchema,
+} from "drizzle-zod";
+import {
   uuid,
   text,
   pgTable,
@@ -70,6 +75,10 @@ export const videos = pgTable("videos", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
+
+export const insertVideoSchema = createInsertSchema(videos);
+export const updateVideoSchema = createUpdateSchema(videos);
+export const selectVideoSchema = createSelectSchema(videos);
 
 export const videoReferences = relations(videos, ({ one }) => ({
   user: one(users, {
