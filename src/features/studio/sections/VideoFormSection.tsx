@@ -1,6 +1,7 @@
 "use client";
 
 import { z } from "zod";
+import { toast } from "sonner";
 import { Suspense } from "react";
 import { trpc } from "@/trpc/client";
 import { useForm } from "react-hook-form";
@@ -35,7 +36,10 @@ type Props = {
 };
 
 function VideoFormSectionSuspence({ videoId }: Props) {
+  const utils = trpc.useUtils();
   const [video] = trpc.studio.getOne.useSuspenseQuery({ id: videoId });
+
+  const updateVideo = trpc.video.update.useMutation();
 
   const form = useForm<z.infer<typeof updateVideoSchema>>({
     resolver: zodResolver(updateVideoSchema),
@@ -43,7 +47,20 @@ function VideoFormSectionSuspence({ videoId }: Props) {
   });
 
   function onSubmit(values: z.infer<typeof updateVideoSchema>) {
-    console.log({ values });
+    if (Object.keys(form.formState.touchedFields)?.length <= 0) return;
+
+    updateVideo.mutate(values, {
+      onSuccess: () => {
+        toast.success("Video updated");
+
+        utils.studio.getMany.invalidate();
+        utils.studio.getOne.invalidate({ id: videoId });
+        form.reset(values);
+      },
+      onError: () => {
+        toast.error("Failed to update video");
+      },
+    });
   }
 
   return (
@@ -56,8 +73,8 @@ function VideoFormSectionSuspence({ videoId }: Props) {
           />
 
           <div className="flex items-center gap-x-1">
-            <Button type="submit" disabled={false}>
-              Save
+            <Button type="submit" disabled={updateVideo.isPending}>
+              {updateVideo.isPending ? "Saving..." : "Save"}
             </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
