@@ -1,15 +1,19 @@
 "use client";
 
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 import { Loader2Icon, PlusIcon } from "lucide-react";
 
 import { trpc } from "@/trpc/client";
 
 import { Button } from "@/components/ui/button";
 import { ResponsiveModal } from "@/components/ResponsiveModal";
+
 import { StudioUploader } from "./StudioUploader";
 
 export function StudioUploadButton() {
+  const router = useRouter();
+
   const utils = trpc.useUtils();
   const create = trpc.video.create.useMutation({
     onSuccess: () => {
@@ -21,6 +25,13 @@ export function StudioUploadButton() {
     },
   });
 
+  function onSuccess() {
+    if (!create?.data?.video?.id) return;
+
+    create.reset();
+    router.push(`/studio/videos/${create?.data?.video?.id}`);
+  }
+
   return (
     <>
       <ResponsiveModal
@@ -28,7 +39,7 @@ export function StudioUploadButton() {
         onOpenChange={() => create.reset()}
         title="Upload a video"
       >
-        <StudioUploader endpoint={create?.data?.url} onSuccess={() => {}} />
+        <StudioUploader endpoint={create?.data?.url} onSuccess={onSuccess} />
       </ResponsiveModal>
       <Button
         variant="secondary"
