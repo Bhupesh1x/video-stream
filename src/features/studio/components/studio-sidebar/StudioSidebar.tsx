@@ -31,7 +31,7 @@ export function StudioSidebar() {
                 tooltip="Content"
                 isActive={pathname === "/studio"}
               >
-                <Link href="/" className="flex items-center gap-4">
+                <Link href="/studio" className="flex items-center gap-4">
                   <VideoIcon className="size-5" />
                   <span className="text-sm">Content</span>
                 </Link>

@@ -50,7 +50,7 @@ function VideosSectionSuspence() {
             ?.flatMap((value) => value.items)
             ?.map((video) => (
               <Link
-                href={`/studio/video/${video.id}`}
+                href={`/studio/videos/${video.id}`}
                 key={video.id}
                 legacyBehavior
               >
