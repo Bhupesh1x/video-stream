@@ -11,9 +11,10 @@ import {
 import { z } from "zod";
 import Link from "next/link";
 import { toast } from "sonner";
-import { Suspense, useState } from "react";
 import { trpc } from "@/trpc/client";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
+import { Suspense, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -54,10 +55,13 @@ type Props = {
 };
 
 function VideoFormSectionSuspence({ videoId }: Props) {
+  const router = useRouter();
+
   const utils = trpc.useUtils();
   const [video] = trpc.studio.getOne.useSuspenseQuery({ id: videoId });
 
   const updateVideo = trpc.video.update.useMutation();
+  const deleteVideo = trpc.video.remove.useMutation();
 
   const form = useForm<z.infer<typeof updateVideoSchema>>({
     resolver: zodResolver(updateVideoSchema),
@@ -100,6 +104,23 @@ function VideoFormSectionSuspence({ videoId }: Props) {
     }, 2000);
   }
 
+  function onDelete(id: string) {
+    deleteVideo.mutate(
+      { id },
+      {
+        onSuccess: () => {
+          toast.success("Video deleted");
+
+          utils.studio.getMany.invalidate();
+          router.replace("/studio");
+        },
+        onError: () => {
+          toast.error("Failed to delete video");
+        },
+      }
+    );
+  }
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -110,7 +131,10 @@ function VideoFormSectionSuspence({ videoId }: Props) {
           />
 
           <div className="flex items-center gap-x-1">
-            <Button type="submit" disabled={updateVideo.isPending}>
+            <Button
+              type="submit"
+              disabled={deleteVideo.isPending || updateVideo.isPending}
+            >
               {updateVideo.isPending ? "Saving..." : "Save"}
             </Button>
             <DropdownMenu>
@@ -120,7 +144,11 @@ function VideoFormSectionSuspence({ videoId }: Props) {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem className="cursor-pointer">
+                <DropdownMenuItem
+                  className="cursor-pointer"
+                  onClick={() => onDelete(video.id)}
+                  disabled={deleteVideo.isPending || updateVideo.isPending}
+                >
                   <Trash2Icon className="size-4 mr-2" />
                   Delete
                 </DropdownMenuItem>
@@ -196,7 +224,11 @@ function VideoFormSectionSuspence({ videoId }: Props) {
                       size="sm"
                       onClick={onCopy}
                       className="shrink-0"
-                      disabled={isCopied}
+                      disabled={
+                        deleteVideo.isPending ||
+                        updateVideo.isPending ||
+                        isCopied
+                      }
                     >
                       {isCopied ? (
                         <CopyCheckIcon className="size-4" />

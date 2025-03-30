@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { and, eq } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 
@@ -59,6 +60,27 @@ export const videoRouter = createTRPCRouter({
           visibility: input.visibility,
         })
         .where(and(eq(videos.id, input.id), eq(videos.userId, userId)))
+        .returning();
+
+      if (!video) {
+        throw new TRPCError({ code: "NOT_FOUND" });
+      }
+
+      return video;
+    }),
+  remove: protectedProcedure
+    .input(
+      z.object({
+        id: z.string().uuid(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { id: userId } = ctx.user;
+      const { id } = input;
+
+      const [video] = await db
+        .delete(videos)
+        .where(and(eq(videos.id, id), eq(videos.userId, userId)))
         .returning();
 
       if (!video) {
