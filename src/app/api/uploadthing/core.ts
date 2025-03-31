@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { and, eq } from "drizzle-orm";
 import { auth } from "@clerk/nextjs/server";
-import { UploadThingError } from "uploadthing/server";
+import { UploadThingError, UTApi } from "uploadthing/server";
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 
 import { db } from "@/db";
@@ -33,6 +33,25 @@ export const ourFileRouter = {
 
       if (!user) throw new UploadThingError("Unauthorized");
 
+      const [existingVideo] = await db
+        .select({ thumbnailFileKey: videos.thumbnailFileKey })
+        .from(videos)
+        .where(and(eq(videos.id, input.videoId), eq(videos.userId, user.id)));
+
+      if (existingVideo?.thumbnailFileKey) {
+        const uatpi = new UTApi();
+
+        uatpi.deleteFiles(existingVideo.thumbnailFileKey);
+
+        await db
+          .update(videos)
+          .set({
+            thumbnailUrl: null,
+            thumbnailFileKey: null,
+          })
+          .where(and(eq(videos.id, input.videoId), eq(videos.userId, user.id)));
+      }
+
       return { user, ...input };
     })
     .onUploadComplete(async ({ metadata, file }) => {
@@ -40,6 +59,7 @@ export const ourFileRouter = {
         .update(videos)
         .set({
           thumbnailUrl: file.url,
+          thumbnailFileKey: file.key,
         })
         .where(
           and(

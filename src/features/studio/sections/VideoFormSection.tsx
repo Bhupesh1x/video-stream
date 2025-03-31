@@ -70,6 +70,7 @@ function VideoFormSectionSuspence({ videoId }: Props) {
 
   const updateVideo = trpc.video.update.useMutation();
   const deleteVideo = trpc.video.remove.useMutation();
+  const restoreThumbnail = trpc.video.restore.useMutation();
 
   const form = useForm<z.infer<typeof updateVideoSchema>>({
     resolver: zodResolver(updateVideoSchema),
@@ -124,6 +125,23 @@ function VideoFormSectionSuspence({ videoId }: Props) {
         },
         onError: () => {
           toast.error("Failed to delete video");
+        },
+      }
+    );
+  }
+
+  function onRestoreThumbnail(id: string) {
+    restoreThumbnail.mutate(
+      { id },
+      {
+        onSuccess: () => {
+          toast.success("Thumbnail restored");
+
+          utils.studio.getMany.invalidate();
+          utils.studio.getOne.invalidate({ id });
+        },
+        onError: () => {
+          toast.error("Failed to restore thumbnail");
         },
       }
     );
@@ -220,7 +238,7 @@ function VideoFormSectionSuspence({ videoId }: Props) {
                         fill
                         src={video.thumbnailUrl || "/images/placeholder.svg"}
                         alt="thumbnail-img"
-                        className="object-cover bg-gray-100"
+                        className="object-cover bg-gray-100 rounded-xl"
                       />
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -243,7 +261,10 @@ function VideoFormSectionSuspence({ videoId }: Props) {
                             <SparklesIcon className="size-4 mr-1" />
                             AI-generated
                           </DropdownMenuItem>
-                          <DropdownMenuItem className="cursor-pointer hover:bg-gray-100 transition">
+                          <DropdownMenuItem
+                            className="cursor-pointer hover:bg-gray-100 transition"
+                            onClick={() => onRestoreThumbnail(video.id)}
+                          >
                             <RotateCcwIcon className="size-4 mr-1" />
                             Restore
                           </DropdownMenuItem>
