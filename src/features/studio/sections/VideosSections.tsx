@@ -131,7 +131,7 @@ function VideoSectionSkeleton() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {Array.from({ length: 2 }).map((_, index) => (
+          {Array.from({ length: 4 }).map((_, index) => (
             <TableRow className="cursor-pointer" key={index}>
               <TableCell>
                 <div className="flex items-center gap-3">

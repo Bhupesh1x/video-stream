@@ -52,6 +52,8 @@ import { Input } from "@/components/ui/input";
 import { Heading } from "@/components/Heading";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+
+import { ThumbnailUploadModal } from "../components/ThumbnailUploadModal";
 import { VideoFormCategoriesSelect } from "../components/videoForm/VideoFormCategoriesSelect";
 
 type Props = {
@@ -60,6 +62,8 @@ type Props = {
 
 function VideoFormSectionSuspence({ videoId }: Props) {
   const router = useRouter();
+
+  const [isThumbnailModalOpen, setIsThumbnailModalOpen] = useState(false);
 
   const utils = trpc.useUtils();
   const [video] = trpc.studio.getOne.useSuspenseQuery({ id: videoId });
@@ -126,220 +130,232 @@ function VideoFormSectionSuspence({ videoId }: Props) {
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="flex items-center justify-between">
-          <Heading
-            title="Video details"
-            description="Manage your video details"
-          />
-
-          <div className="flex items-center gap-x-1">
-            <Button
-              type="submit"
-              disabled={deleteVideo.isPending || updateVideo.isPending}
-            >
-              {updateVideo.isPending ? "Saving..." : "Save"}
-            </Button>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" type="button" size="icon">
-                  <MoreVerticalIcon className="size-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem
-                  className="cursor-pointer"
-                  onClick={() => onDelete(video.id)}
-                  disabled={deleteVideo.isPending || updateVideo.isPending}
-                >
-                  <Trash2Icon className="size-4 mr-2" />
-                  Delete
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 my-6">
-          <div className="lg:col-span-3 space-y-8">
-            <FormField
-              control={form.control}
-              name="title"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Title</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      placeholder="Please enter your video title here"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+    <>
+      <ThumbnailUploadModal
+        open={isThumbnailModalOpen}
+        onOpenChange={setIsThumbnailModalOpen}
+        videoId={video.id}
+      />
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <div className="flex items-center justify-between">
+            <Heading
+              title="Video details"
+              description="Manage your video details"
             />
 
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      {...field}
-                      value={field.value ?? ""}
-                      placeholder="Add a description to your video"
-                      rows={10}
-                      className="resize-none"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              name="thumbnailUrl"
-              control={form.control}
-              render={() => (
-                <FormItem>
-                  <FormLabel>Thumbnail</FormLabel>
-                  <div className="p-0.5 relative h-[84px] w-[153px] group">
-                    <Image
-                      fill
-                      src={video.thumbnailUrl || "/images/placeholder.svg"}
-                      alt="thumbnail-img"
-                      className="object-contain bg-gray-100"
-                    />
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          size="icon"
-                          className="bg-black/50 hover:bg-black/50 cursor-pointer opacity-100 md:opacity-0 hover:opacity-100 absolute top-1 right-1"
-                        >
-                          <MoreVerticalIcon className="text-white" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="start" side="right">
-                        <DropdownMenuItem className="cursor-pointer hover:bg-gray-100 transition">
-                          <ImagePlusIcon className="size-4 mr-1" />
-                          Change
-                        </DropdownMenuItem>
-                        <DropdownMenuItem className="cursor-pointer hover:bg-gray-100 transition">
-                          <SparklesIcon className="size-4 mr-1" />
-                          AI-generated
-                        </DropdownMenuItem>
-                        <DropdownMenuItem className="cursor-pointer hover:bg-gray-100 transition">
-                          <RotateCcwIcon className="size-4 mr-1" />
-                          Restore
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
-                </FormItem>
-              )}
-            />
-            <VideoFormCategoriesSelect form={form} />
+            <div className="flex items-center gap-x-1">
+              <Button
+                type="submit"
+                disabled={deleteVideo.isPending || updateVideo.isPending}
+              >
+                {updateVideo.isPending ? "Saving..." : "Save"}
+              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" type="button" size="icon">
+                    <MoreVerticalIcon className="size-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem
+                    className="cursor-pointer"
+                    onClick={() => onDelete(video.id)}
+                    disabled={deleteVideo.isPending || updateVideo.isPending}
+                  >
+                    <Trash2Icon className="size-4 mr-2" />
+                    Delete
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           </div>
 
-          <div className="space-y-8 lg:col-span-2">
-            <div className="flex flex-col gap-4 bg-[#F9f9f9] rounded-xl overflow-hidden h-fit">
-              <div className="aspect-video overflow-hidden relative">
-                <VideoPlayer
-                  playbackId={video.muxPlaybackId ?? undefined}
-                  thumbnailUrl={video.thumbnailUrl ?? undefined}
-                />
-              </div>
-              <p className="text-xs text-muted-foreground px-4">
-                Note: Since this project is using the unpaid version of Mux,
-                videos will be automatically deleted after 24 hours
-              </p>
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 my-6">
+            <div className="lg:col-span-3 space-y-8">
+              <FormField
+                control={form.control}
+                name="title"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Title</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder="Please enter your video title here"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-              <div className="p-4 space-y-6">
-                <div>
-                  <p className="text-xs text-muted-foreground">Video link</p>
-                  <div className="flex items-center gapx-x-1">
-                    <Link href={`/videos/${video.id}`}>
-                      <p className="text-blue-500 line-clamp-1 text-sm">
-                        {fullUrl}
-                      </p>
-                    </Link>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={onCopy}
-                      className="shrink-0"
-                      disabled={
-                        deleteVideo.isPending ||
-                        updateVideo.isPending ||
-                        isCopied
-                      }
-                    >
-                      {isCopied ? (
-                        <CopyCheckIcon className="size-4" />
-                      ) : (
-                        <CopyIcon className="size-4" />
-                      )}
-                    </Button>
-                  </div>
-                </div>
-
-                <div>
-                  <p className="text-xs text-muted-foreground">Video status</p>
-                  <p className="text-sm">
-                    {snakeCaseToTitle(video.muxStatus ?? "preparing")}
-                  </p>
-                </div>
-
-                <div>
-                  <p className="text-xs text-muted-foreground">
-                    Subtitles status
-                  </p>
-                  <p className="text-sm">
-                    {snakeCaseToTitle(video.muxTrackStatus ?? "no_subtitles")}
-                  </p>
-                </div>
-              </div>
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Description</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        {...field}
+                        value={field.value ?? ""}
+                        placeholder="Add a description to your video"
+                        rows={10}
+                        className="resize-none"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                name="thumbnailUrl"
+                control={form.control}
+                render={() => (
+                  <FormItem>
+                    <FormLabel>Thumbnail</FormLabel>
+                    <div className="p-0.5 relative h-[84px] w-[153px] group">
+                      <Image
+                        fill
+                        src={video.thumbnailUrl || "/images/placeholder.svg"}
+                        alt="thumbnail-img"
+                        className="object-cover bg-gray-100"
+                      />
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            size="icon"
+                            className="bg-black/50 hover:bg-black/50 cursor-pointer opacity-100 md:opacity-0 hover:opacity-100 absolute top-1 right-1"
+                          >
+                            <MoreVerticalIcon className="text-white" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="start" side="right">
+                          <DropdownMenuItem
+                            className="cursor-pointer hover:bg-gray-100 transition"
+                            onClick={() => setIsThumbnailModalOpen(true)}
+                          >
+                            <ImagePlusIcon className="size-4 mr-1" />
+                            Change
+                          </DropdownMenuItem>
+                          <DropdownMenuItem className="cursor-pointer hover:bg-gray-100 transition">
+                            <SparklesIcon className="size-4 mr-1" />
+                            AI-generated
+                          </DropdownMenuItem>
+                          <DropdownMenuItem className="cursor-pointer hover:bg-gray-100 transition">
+                            <RotateCcwIcon className="size-4 mr-1" />
+                            Restore
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
+                  </FormItem>
+                )}
+              />
+              <VideoFormCategoriesSelect form={form} />
             </div>
 
-            <FormField
-              control={form.control}
-              name="visibility"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Visibility</FormLabel>
-                  <Select
-                    defaultValue={field.value ?? undefined}
-                    onValueChange={field.onChange}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select visibility" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="public">
-                        <div className="flex items-center gap-2">
-                          <Globe2Icon className="size-4 mr-2" />
-                          Public
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="private">
-                        <div className="flex items-center gap-2">
-                          <LockIcon className="size-4 mr-2" />
-                          Private
-                        </div>
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                </FormItem>
-              )}
-            />
+            <div className="space-y-8 lg:col-span-2">
+              <div className="flex flex-col gap-4 bg-[#F9f9f9] rounded-xl overflow-hidden h-fit">
+                <div className="aspect-video overflow-hidden relative">
+                  <VideoPlayer
+                    playbackId={video.muxPlaybackId ?? undefined}
+                    thumbnailUrl={video.thumbnailUrl ?? undefined}
+                  />
+                </div>
+                <p className="text-xs text-muted-foreground px-4">
+                  Note: Since this project is using the unpaid version of Mux,
+                  videos will be automatically deleted after 24 hours
+                </p>
+
+                <div className="p-4 space-y-6">
+                  <div>
+                    <p className="text-xs text-muted-foreground">Video link</p>
+                    <div className="flex items-center gapx-x-1">
+                      <Link href={`/videos/${video.id}`}>
+                        <p className="text-blue-500 line-clamp-1 text-sm">
+                          {fullUrl}
+                        </p>
+                      </Link>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={onCopy}
+                        className="shrink-0"
+                        disabled={
+                          deleteVideo.isPending ||
+                          updateVideo.isPending ||
+                          isCopied
+                        }
+                      >
+                        {isCopied ? (
+                          <CopyCheckIcon className="size-4" />
+                        ) : (
+                          <CopyIcon className="size-4" />
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <p className="text-xs text-muted-foreground">
+                      Video status
+                    </p>
+                    <p className="text-sm">
+                      {snakeCaseToTitle(video.muxStatus ?? "preparing")}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p className="text-xs text-muted-foreground">
+                      Subtitles status
+                    </p>
+                    <p className="text-sm">
+                      {snakeCaseToTitle(video.muxTrackStatus ?? "no_subtitles")}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <FormField
+                control={form.control}
+                name="visibility"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Visibility</FormLabel>
+                    <Select
+                      defaultValue={field.value ?? undefined}
+                      onValueChange={field.onChange}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select visibility" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="public">
+                          <div className="flex items-center gap-2">
+                            <Globe2Icon className="size-4 mr-2" />
+                            Public
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="private">
+                          <div className="flex items-center gap-2">
+                            <LockIcon className="size-4 mr-2" />
+                            Private
+                          </div>
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </FormItem>
+                )}
+              />
+            </div>
           </div>
-        </div>
-      </form>
-    </Form>
+        </form>
+      </Form>
+    </>
   );
 }
 
