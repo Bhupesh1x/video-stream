@@ -4,12 +4,16 @@ import {
   CopyCheckIcon,
   CopyIcon,
   Globe2Icon,
+  ImagePlusIcon,
   LockIcon,
   MoreVerticalIcon,
+  RotateCcwIcon,
+  SparklesIcon,
   Trash2Icon,
 } from "lucide-react";
 import { z } from "zod";
 import Link from "next/link";
+import Image from "next/image";
 import { toast } from "sonner";
 import { trpc } from "@/trpc/client";
 import { useForm } from "react-hook-form";
@@ -175,6 +179,7 @@ function VideoFormSectionSuspence({ videoId }: Props) {
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
               name="description"
@@ -191,6 +196,47 @@ function VideoFormSectionSuspence({ videoId }: Props) {
                     />
                   </FormControl>
                   <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              name="thumbnailUrl"
+              control={form.control}
+              render={() => (
+                <FormItem>
+                  <FormLabel>Thumbnail</FormLabel>
+                  <div className="p-0.5 relative h-[84px] w-[153px] group">
+                    <Image
+                      fill
+                      src={video.thumbnailUrl || "/images/placeholder.svg"}
+                      alt="thumbnail-img"
+                      className="object-contain bg-gray-100"
+                    />
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          size="icon"
+                          className="bg-black/50 hover:bg-black/50 cursor-pointer opacity-100 md:opacity-0 hover:opacity-100 absolute top-1 right-1"
+                        >
+                          <MoreVerticalIcon className="text-white" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="start" side="right">
+                        <DropdownMenuItem className="cursor-pointer hover:bg-gray-100 transition">
+                          <ImagePlusIcon className="size-4 mr-1" />
+                          Change
+                        </DropdownMenuItem>
+                        <DropdownMenuItem className="cursor-pointer hover:bg-gray-100 transition">
+                          <SparklesIcon className="size-4 mr-1" />
+                          AI-generated
+                        </DropdownMenuItem>
+                        <DropdownMenuItem className="cursor-pointer hover:bg-gray-100 transition">
+                          <RotateCcwIcon className="size-4 mr-1" />
+                          Restore
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
                 </FormItem>
               )}
             />
