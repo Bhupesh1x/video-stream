@@ -73,6 +73,7 @@ function VideoFormSectionSuspence({ videoId }: Props) {
   const deleteVideo = trpc.video.remove.useMutation();
   const restoreThumbnail = trpc.video.restore.useMutation();
   const generateTitle = trpc.video.generateTitle.useMutation();
+  const generateDescription = trpc.video.generateDescription.useMutation();
 
   const form = useForm<z.infer<typeof updateVideoSchema>>({
     resolver: zodResolver(updateVideoSchema),
@@ -156,10 +157,32 @@ function VideoFormSectionSuspence({ videoId }: Props) {
         onSuccess: () => {
           toast.success("Background job started", {
             description: "This may take some time",
+            classNames: {
+              description: "toast-description",
+            },
           });
         },
         onError: () => {
           toast.error("Failed to generate title");
+        },
+      }
+    );
+  }
+
+  function onGenerateDescription(id: string) {
+    generateDescription.mutate(
+      { id },
+      {
+        onSuccess: () => {
+          toast.success("Background job started", {
+            description: "This may take some time",
+            classNames: {
+              description: "toast-description",
+            },
+          });
+        },
+        onError: () => {
+          toast.error("Failed to generate description");
         },
       }
     );
@@ -249,7 +272,25 @@ function VideoFormSectionSuspence({ videoId }: Props) {
                 name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Description</FormLabel>
+                    <FormLabel>
+                      <div className="flex items-center gap-x-2">
+                        Description
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="rounded-full size-6 [&_svg]:size-3"
+                          type="button"
+                          onClick={() => onGenerateDescription(video.id)}
+                          disabled={generateDescription.isPending}
+                        >
+                          {generateDescription.isPending ? (
+                            <Loader2 className="animate-spin" />
+                          ) : (
+                            <SparklesIcon />
+                          )}
+                        </Button>
+                      </div>
+                    </FormLabel>
                     <FormControl>
                       <Textarea
                         {...field}

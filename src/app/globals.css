@@ -149,3 +149,7 @@
 .cl-internal-1dauvpw {
   display: none;
 }
+
+.toast-description {
+  color: black !important;
+}
