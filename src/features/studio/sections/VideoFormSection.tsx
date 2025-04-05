@@ -246,7 +246,9 @@ function VideoFormSectionSuspence({ videoId }: Props) {
                           className="rounded-full size-6 [&_svg]:size-3"
                           type="button"
                           onClick={() => onGenerateTitle(video.id)}
-                          disabled={generateTitle.isPending}
+                          disabled={
+                            generateTitle.isPending || !video.muxTrackId
+                          }
                         >
                           {generateTitle.isPending ? (
                             <Loader2 className="animate-spin" />
@@ -281,7 +283,9 @@ function VideoFormSectionSuspence({ videoId }: Props) {
                           className="rounded-full size-6 [&_svg]:size-3"
                           type="button"
                           onClick={() => onGenerateDescription(video.id)}
-                          disabled={generateDescription.isPending}
+                          disabled={
+                            generateDescription.isPending || !video.muxTrackId
+                          }
                         >
                           {generateDescription.isPending ? (
                             <Loader2 className="animate-spin" />
