@@ -5,6 +5,7 @@ import {
   CopyIcon,
   Globe2Icon,
   ImagePlusIcon,
+  Loader2,
   LockIcon,
   MoreVerticalIcon,
   RotateCcwIcon,
@@ -71,6 +72,7 @@ function VideoFormSectionSuspence({ videoId }: Props) {
   const updateVideo = trpc.video.update.useMutation();
   const deleteVideo = trpc.video.remove.useMutation();
   const restoreThumbnail = trpc.video.restore.useMutation();
+  const generateTitle = trpc.video.generateTitle.useMutation();
 
   const form = useForm<z.infer<typeof updateVideoSchema>>({
     resolver: zodResolver(updateVideoSchema),
@@ -147,6 +149,22 @@ function VideoFormSectionSuspence({ videoId }: Props) {
     );
   }
 
+  function onGenerateTitle(id: string) {
+    generateTitle.mutate(
+      { id },
+      {
+        onSuccess: () => {
+          toast.success("Background job started", {
+            description: "This may take some time",
+          });
+        },
+        onError: () => {
+          toast.error("Failed to generate title");
+        },
+      }
+    );
+  }
+
   return (
     <>
       <ThumbnailUploadModal
@@ -196,7 +214,25 @@ function VideoFormSectionSuspence({ videoId }: Props) {
                 name="title"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Title</FormLabel>
+                    <FormLabel>
+                      <div className="flex items-center gap-x-2">
+                        Title
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="rounded-full size-6 [&_svg]:size-3"
+                          type="button"
+                          onClick={() => onGenerateTitle(video.id)}
+                          disabled={generateTitle.isPending}
+                        >
+                          {generateTitle.isPending ? (
+                            <Loader2 className="animate-spin" />
+                          ) : (
+                            <SparklesIcon />
+                          )}
+                        </Button>
+                      </div>
+                    </FormLabel>
                     <FormControl>
                       <Input
                         {...field}
