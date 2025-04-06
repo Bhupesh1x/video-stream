@@ -52,6 +52,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Heading } from "@/components/Heading";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
 
 import { ThumbnailUploadModal } from "../components/ThumbnailUploadModal";
@@ -338,10 +339,7 @@ function VideoFormSectionSuspence({ videoId }: Props) {
                             <ImagePlusIcon className="size-4 mr-1" />
                             Change
                           </DropdownMenuItem>
-                          <DropdownMenuItem className="cursor-pointer hover:bg-gray-100 transition">
-                            <SparklesIcon className="size-4 mr-1" />
-                            AI-generated
-                          </DropdownMenuItem>
+
                           <DropdownMenuItem
                             className="cursor-pointer hover:bg-gray-100 transition"
                             onClick={() => onRestoreThumbnail(video.id)}
@@ -462,7 +460,87 @@ function VideoFormSectionSuspence({ videoId }: Props) {
 }
 
 export function VideoFormSectionSkeleton() {
-  return <p>Loading...</p>;
+  return (
+    <div>
+      <div className="flex items-center justify-between">
+        <Heading
+          title="Video details"
+          description="Manage your video details"
+        />
+
+        <div className="flex items-center gap-x-1">
+          <Skeleton className="h-[36px] w-[64px]" />
+          <Skeleton className="h-[36px] w-[36px]" />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 my-6">
+        <div className="lg:col-span-3 space-y-8">
+          <div className="flex flex-col gap-y-2">
+            <Skeleton className="h-[24px] w-[43px]" />
+            <Skeleton className="h-[36px] w-full" />
+          </div>
+
+          <div className="flex flex-col gap-y-2">
+            <Skeleton className="h-[24px] w-[70px]" />
+            <Skeleton className="h-[257px] w-full" />
+          </div>
+
+          <div className="flex flex-col gap-y-2">
+            <Skeleton className="h-[24px] w-[60px]" />
+            <Skeleton className="h-[84px] w-[153px]" />
+          </div>
+
+          <div className="flex flex-col gap-y-2">
+            <Skeleton className="h-[24px] w-[43px]" />
+            <Skeleton className="h-[36px] w-full" />
+          </div>
+        </div>
+
+        <div className="space-y-8 lg:col-span-2">
+          <div className="flex flex-col gap-4 bg-[#F9f9f9] rounded-xl overflow-hidden h-fit">
+            <div className="aspect-video overflow-hidden relative">
+              {/* <VideoPlayer
+                playbackId={video.muxPlaybackId ?? undefined}
+                thumbnailUrl={video.thumbnailUrl ?? undefined}
+              /> */}
+              <Skeleton className="aspect-video" />
+            </div>
+            <p className="text-xs text-muted-foreground px-4">
+              Note: Since this project is using the unpaid version of Mux,
+              videos will be automatically deleted after 24 hours
+            </p>
+
+            <div className="p-4 space-y-6">
+              <div>
+                <p className="text-xs text-muted-foreground">Video link</p>
+                <div className="flex items-center gapx-x-1">
+                  <Skeleton className="h-[20px] w-full" />
+                </div>
+              </div>
+
+              <div>
+                <p className="text-xs text-muted-foreground">Video status</p>
+                <Skeleton className="h-[20px] w-[60px]" />
+              </div>
+
+              <div>
+                <p className="text-xs text-muted-foreground">
+                  Subtitles status
+                </p>
+                <Skeleton className="h-[20px] w-[60px]" />
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-y-2">
+            <Skeleton className="h-[24px] w-[43px]" />
+            <Skeleton className="h-[36px] w-full" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export function VideoFormSection({ videoId }: Props) {
