@@ -8,14 +8,17 @@ export function VideoReactions() {
     <div className="flex items-center border rounded-full border-neutral-400">
       <Button
         variant="secondary"
-        className="rounded-l-full rounded-r-none border-r border-neutral-400"
+        className="rounded-l-full rounded-r-none border-r border-neutral-400 hover:bg-gray-200 transition"
       >
         <ThumbsUpIcon
           className={`size-5 ${userReaction === "like" ? "fill-black" : ""}`}
         />
         {1}
       </Button>
-      <Button variant="secondary" className="rounded-l-none rounded-r-full">
+      <Button
+        variant="secondary"
+        className="rounded-l-none rounded-r-full hover:bg-gray-200 transition"
+      >
         <ThumbsDownIcon
           className={`size-5 ${userReaction !== "like" ? "fill-black" : ""}`}
         />

@@ -18,7 +18,7 @@ export function VideoTopRow({ video }: Props) {
 
         <div className="flex items-center gap-2">
           <VideoReactions />
-          <VideoMenu />
+          <VideoMenu videoId={video.id} />
         </div>
       </div>
     </div>
