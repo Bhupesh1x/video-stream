@@ -13,10 +13,10 @@ export function VideoTopRow({ video }: Props) {
     <div className="mt-4 space-y-4">
       <h1 className="text-xl font-semibold">{video.title || " "}</h1>
 
-      <div className="flex justify-between">
+      <div className="flex flex-col lg:flex-row justify-between gap-3">
         <VideoOwner user={video?.user} videoId={video.id} />
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center justify-between gap-2">
           <VideoReactions />
           <VideoMenu videoId={video.id} />
         </div>

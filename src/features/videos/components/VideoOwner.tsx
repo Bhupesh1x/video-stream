@@ -20,7 +20,7 @@ export function VideoOwner({ user, videoId }: Props) {
   console.log({ clerkUserId, userId: user.clerkId });
 
   return (
-    <div className="flex items-center gap-4">
+    <div className="flex items-center justify-between gap-4">
       <Link href={`/users/${user.id}`}>
         <div className="flex items-center gap-x-2">
           <UserAvatar

@@ -36,7 +36,7 @@ export function VideoMenu({ videoId, variant = "secondary", onRemove }: Props) {
       <DropdownMenuTrigger asChild>
         <Button
           variant={variant}
-          className="border border-neutral-400 rounded-full hover:bg-gray-200 transition"
+          className="rounded-full hover:bg-gray-200 transition"
           size="icon"
         >
           <MoreVerticalIcon className="size-5" />
