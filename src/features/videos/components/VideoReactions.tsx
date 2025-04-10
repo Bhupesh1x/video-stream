@@ -1,0 +1,26 @@
+import { ThumbsDownIcon, ThumbsUpIcon } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+
+export function VideoReactions() {
+  const userReaction: "like" | "dislike" = "like";
+  return (
+    <div className="flex items-center border rounded-full border-neutral-400">
+      <Button
+        variant="secondary"
+        className="rounded-l-full rounded-r-none border-r border-neutral-400"
+      >
+        <ThumbsUpIcon
+          className={`size-5 ${userReaction === "like" ? "fill-black" : ""}`}
+        />
+        {1}
+      </Button>
+      <Button variant="secondary" className="rounded-l-none rounded-r-full">
+        <ThumbsDownIcon
+          className={`size-5 ${userReaction !== "like" ? "fill-black" : ""}`}
+        />
+        {1}
+      </Button>
+    </div>
+  );
+}

@@ -17,7 +17,7 @@ export function VideoSectionSuspense({ videoId }: Props) {
   const [video] = trpc.video.getOne.useSuspenseQuery({ videoId });
 
   return (
-    <>
+    <div className="mb-4">
       <div
         className={`aspect-video bg-black overflow-hidden relative rounded-xl ${
           video.muxStatus !== "ready" ? "rounded-b-none" : ""
@@ -32,7 +32,7 @@ export function VideoSectionSuspense({ videoId }: Props) {
       </div>
       <VideoBanner status={video.muxStatus} />
       <VideoTopRow video={video} />
-    </>
+    </div>
   );
 }
 
