@@ -1,14 +1,18 @@
 import { z } from "zod";
-import { and, eq } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 import { UTApi } from "uploadthing/server";
+import { and, eq, getTableColumns } from "drizzle-orm";
 
+import {
+  baseProcedure,
+  createTRPCRouter,
+  protectedProcedure,
+} from "@/trpc/init";
 import { mux } from "@/lib/mux";
 import { workflow } from "@/lib/workflow";
-import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
 
 import { db } from "@/db";
-import { updateVideoSchema, videos } from "@/db/schema";
+import { updateVideoSchema, users, videos } from "@/db/schema";
 
 export const videoRouter = createTRPCRouter({
   create: protectedProcedure.mutation(async ({ ctx }) => {
@@ -179,5 +183,29 @@ export const videoRouter = createTRPCRouter({
       });
 
       return workflowRunId;
+    }),
+  getOne: baseProcedure
+    .input(
+      z.object({
+        videoId: z.string(),
+      })
+    )
+    .query(async ({ input }) => {
+      const [existingVideo] = await db
+        .select({
+          ...getTableColumns(videos),
+          user: {
+            ...getTableColumns(users),
+          },
+        })
+        .from(videos)
+        .innerJoin(users, eq(videos.userId, users.id))
+        .where(eq(videos.id, input.videoId));
+
+      if (!existingVideo) {
+        throw new TRPCError({ code: "NOT_FOUND" });
+      }
+
+      return existingVideo;
     }),
 });
