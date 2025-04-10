@@ -500,10 +500,6 @@ export function VideoFormSectionSkeleton() {
         <div className="space-y-8 lg:col-span-2">
           <div className="flex flex-col gap-4 bg-[#F9f9f9] rounded-xl overflow-hidden h-fit">
             <div className="aspect-video overflow-hidden relative">
-              {/* <VideoPlayer
-                playbackId={video.muxPlaybackId ?? undefined}
-                thumbnailUrl={video.thumbnailUrl ?? undefined}
-              /> */}
               <Skeleton className="aspect-video" />
             </div>
             <p className="text-xs text-muted-foreground px-4">

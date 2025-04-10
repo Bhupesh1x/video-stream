@@ -1,10 +1,12 @@
+"use client";
+
 import MuxPlayer from "@mux/mux-player-react";
 
 type Props = {
-  playbackId?: string | undefined;
+  playbackId?: string | undefined | null;
   autoPlay?: boolean;
   onPlay?: () => void;
-  thumbnailUrl?: string | undefined;
+  thumbnailUrl?: string | undefined | null;
 };
 
 export function VideoPlayer({
