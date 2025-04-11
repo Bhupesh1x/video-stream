@@ -17,8 +17,6 @@ type Props = {
 export function VideoOwner({ user, videoId }: Props) {
   const { userId: clerkUserId } = useAuth();
 
-  console.log({ clerkUserId, userId: user.clerkId });
-
   return (
     <div className="flex items-center justify-between gap-4">
       <Link href={`/users/${user.id}`}>

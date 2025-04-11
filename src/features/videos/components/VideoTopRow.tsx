@@ -11,7 +11,9 @@ type Props = {
 export function VideoTopRow({ video }: Props) {
   return (
     <div className="mt-4 space-y-4">
-      <h1 className="text-xl font-semibold">{video.title || " "}</h1>
+      <h1 className="text-xl font-semibold line-clamp-2" title={video.title}>
+        {video.title || " "}
+      </h1>
 
       <div className="flex flex-col lg:flex-row justify-between gap-3">
         <VideoOwner user={video?.user} videoId={video.id} />
