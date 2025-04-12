@@ -1,5 +1,6 @@
 "use client";
 
+import { useAuth } from "@clerk/nextjs";
 import { Suspense, useMemo } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { format, formatDistanceToNow } from "date-fns";
@@ -16,7 +17,12 @@ type Props = {
 };
 
 export function VideoSectionSuspense({ videoId }: Props) {
+  const { isSignedIn } = useAuth();
+  const utils = trpc.useUtils();
+
   const [video] = trpc.video.getOne.useSuspenseQuery({ videoId });
+
+  const createVideoView = trpc.videoViews.create.useMutation();
 
   const compactViews = useMemo(() => {
     return Intl.NumberFormat("en", {
@@ -38,6 +44,19 @@ export function VideoSectionSuspense({ videoId }: Props) {
     return format(video.createdAt, "d MMM yyyy");
   }, [video.createdAt]);
 
+  function onPlay() {
+    if (!isSignedIn) return;
+
+    createVideoView.mutate(
+      { videoId },
+      {
+        onSuccess: () => {
+          utils.video.getOne.invalidate({ videoId });
+        },
+      }
+    );
+  }
+
   return (
     <div className="mb-4">
       <div
@@ -48,7 +67,7 @@ export function VideoSectionSuspense({ videoId }: Props) {
         <VideoPlayer
           playbackId={video.muxPlaybackId}
           autoPlay
-          onPlay={() => {}}
+          onPlay={onPlay}
           thumbnailUrl={video.thumbnailUrl}
         />
       </div>

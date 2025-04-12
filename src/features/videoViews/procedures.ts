@@ -2,7 +2,7 @@ import { z } from "zod";
 import { and, eq } from "drizzle-orm";
 
 import { db } from "@/db";
-import { users, videos, videoViews } from "@/db/schema";
+import { videoViews } from "@/db/schema";
 
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
 
@@ -16,7 +16,9 @@ export const videoViewsRouter = createTRPCRouter({
       const [existingVideoView] = await db
         .select()
         .from(videoViews)
-        .where(and(eq(videos.id, videoId), eq(users.id, userId)));
+        .where(
+          and(eq(videoViews.videoId, videoId), eq(videoViews.userId, userId))
+        );
 
       if (existingVideoView) {
         return existingVideoView;
