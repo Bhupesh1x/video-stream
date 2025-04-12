@@ -39,7 +39,7 @@ export function VideoSectionSuspense({ videoId }: Props) {
   }, [video.createdAt]);
 
   return (
-    <div className="mb-4 space-y-6">
+    <div className="mb-4">
       <div
         className={`aspect-video bg-black overflow-hidden relative rounded-xl ${
           video.muxStatus !== "ready" ? "rounded-b-none" : ""
@@ -53,14 +53,16 @@ export function VideoSectionSuspense({ videoId }: Props) {
         />
       </div>
       <VideoBanner status={video.muxStatus} />
-      <VideoTopRow video={video} />
-      <VideoDescription
-        description={video?.description || ""}
-        compactViews={compactViews}
-        compactDate={compactDate}
-        expandedViews={expandedViews}
-        expandedDate={expandedDate}
-      />
+      <div className="mt-6 space-y-6">
+        <VideoTopRow video={video} />
+        <VideoDescription
+          description={video?.description || ""}
+          compactViews={compactViews}
+          compactDate={compactDate}
+          expandedViews={expandedViews}
+          expandedDate={expandedDate}
+        />
+      </div>
     </div>
   );
 }
