@@ -19,7 +19,12 @@ export function VideoTopRow({ video }: Props) {
         <VideoOwner user={video?.user} videoId={video.id} />
 
         <div className="flex items-center justify-between gap-2">
-          <VideoReactions />
+          <VideoReactions
+            videoId={video.id}
+            likes={video.likeCount}
+            dislikes={video.dislikeCount}
+            viewerReaction={video.viewerReaction}
+          />
           <VideoMenu videoId={video.id} />
         </div>
       </div>
