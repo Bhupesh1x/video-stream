@@ -1,3 +1,4 @@
+import { useClerk } from "@clerk/nextjs";
 import { ThumbsDownIcon, ThumbsUpIcon } from "lucide-react";
 
 import { trpc } from "@/trpc/client";
@@ -20,11 +21,16 @@ export function VideoReactions({
   viewerReaction,
 }: Props) {
   const utils = trpc.useUtils();
+  const { isSignedIn, openSignIn } = useClerk();
 
   const likeVideo = trpc.videoReactions.like.useMutation();
   const dislikeVideo = trpc.videoReactions.dislike.useMutation();
 
   function onLike() {
+    if (!isSignedIn) {
+      return openSignIn();
+    }
+
     likeVideo.mutate(
       { videoId },
       {
@@ -36,6 +42,10 @@ export function VideoReactions({
   }
 
   function onDislike() {
+    if (!isSignedIn) {
+      return openSignIn();
+    }
+
     dislikeVideo.mutate(
       { videoId },
       {

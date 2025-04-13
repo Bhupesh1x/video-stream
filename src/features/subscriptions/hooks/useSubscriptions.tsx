@@ -15,7 +15,7 @@ export function useSubscriptions({
   fromVideoId,
 }: Props) {
   const utils = trpc.useUtils();
-  const { openSignIn } = useClerk();
+  const { isSignedIn, openSignIn } = useClerk();
 
   const subscribe = trpc.subscriptions.create.useMutation();
   const unsubscribe = trpc.subscriptions.remove.useMutation();
@@ -23,6 +23,10 @@ export function useSubscriptions({
   const isPending = subscribe.isPending || unsubscribe.isPending;
 
   function onClick() {
+    if (!isSignedIn) {
+      return openSignIn();
+    }
+
     if (isSubscribed) {
       unsubscribe.mutate(
         { userId: creatorId },
