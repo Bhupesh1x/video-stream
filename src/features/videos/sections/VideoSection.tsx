@@ -7,6 +7,8 @@ import { format, formatDistanceToNow } from "date-fns";
 
 import { trpc } from "@/trpc/client";
 
+import { Skeleton } from "@/components/ui/skeleton";
+
 import { VideoPlayer } from "../components/VideoPlayer";
 import { VideoBanner } from "../components/VideoBanner";
 import { VideoTopRow } from "../components/VideoTopRow";
@@ -87,7 +89,38 @@ export function VideoSectionSuspense({ videoId }: Props) {
 }
 
 export function VideoSectionSkeleton() {
-  return <p>Loading...</p>;
+  return (
+    <div className="mb-4">
+      <div className="aspect-video bg-black overflow-hidden relative rounded-xl">
+        <Skeleton className="h-full w-full" />
+      </div>
+      <div className="mt-6 space-y-6">
+        <div className="mt-4 space-y-4">
+          <Skeleton className="h-[28px] w-full" />
+
+          <div className="flex flex-col lg:flex-row justify-between gap-3">
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex items-center gap-x-2">
+                <Skeleton className="h-[40px] w-[40px] rounded-full" />
+                <div className="flex flex-col gap-[1px]">
+                  <Skeleton className="h-[24px] w-[110px]" />
+                  <Skeleton className="h-[24px] w-[90px]" />
+                </div>
+              </div>
+
+              <Skeleton className="h-[36px] w-[99px] rounded-full" />
+            </div>
+
+            <div className="flex items-center justify-between gap-2">
+              <Skeleton className="h-[38px] w-[129px] rounded-full" />
+              <Skeleton className="h-[36px] w-[36px] rounded-full" />
+            </div>
+          </div>
+          <Skeleton className=" rounded-xl p-2 h-[120px] w-full" />
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export function VideoSection({ videoId }: Props) {
