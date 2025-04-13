@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { UTApi } from "uploadthing/server";
-import { and, eq, getTableColumns, inArray } from "drizzle-orm";
+import { and, eq, getTableColumns, inArray, isNotNull } from "drizzle-orm";
 
 import {
   baseProcedure,
@@ -12,6 +12,7 @@ import { mux } from "@/lib/mux";
 import { workflow } from "@/lib/workflow";
 
 import {
+  subscriptions,
   updateVideoSchema,
   users,
   videoReactions,
@@ -221,12 +222,26 @@ export const videoRouter = createTRPCRouter({
           .where(inArray(videoReactions.userId, userId ? [userId] : []))
       );
 
+      const viewerSubscription = db.$with("viewer_subscription").as(
+        db
+          .select()
+          .from(subscriptions)
+          .where(inArray(subscriptions.viewerId, userId ? [userId] : []))
+      );
+
       const [existingVideo] = await db
-        .with(viewerReaction)
+        .with(viewerReaction, viewerSubscription)
         .select({
           ...getTableColumns(videos),
           user: {
             ...getTableColumns(users),
+            subscriptionCount: db.$count(
+              subscriptions,
+              eq(subscriptions.creatorId, users.id)
+            ),
+            viewerSubscribed: isNotNull(viewerSubscription.viewerId).mapWith(
+              Boolean
+            ),
           },
           viewCount: db.$count(videoViews, eq(videoViews.videoId, videos.id)),
           likeCount: db.$count(
@@ -248,6 +263,10 @@ export const videoRouter = createTRPCRouter({
         .from(videos)
         .innerJoin(users, eq(videos.userId, users.id))
         .leftJoin(viewerReaction, eq(viewerReaction.videoId, videos.id))
+        .leftJoin(
+          viewerSubscription,
+          eq(viewerSubscription.creatorId, videos.userId)
+        )
         .where(eq(videos.id, input.videoId));
 
       if (!existingVideo) {
