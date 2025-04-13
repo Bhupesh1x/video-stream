@@ -1,4 +1,5 @@
 import { Heading } from "@/components/Heading";
+
 import { VideosSection } from "../sections/VideosSections";
 
 export function StudioView() {

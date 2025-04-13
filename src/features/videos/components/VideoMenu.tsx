@@ -4,6 +4,7 @@ import {
   ShareIcon,
   Trash2Icon,
 } from "lucide-react";
+import { toast } from "sonner";
 
 import {
   DropdownMenu,
@@ -12,7 +13,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button, ButtonProps } from "@/components/ui/button";
-import { toast } from "sonner";
 
 type Props = {
   videoId: string;

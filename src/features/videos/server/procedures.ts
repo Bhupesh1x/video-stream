@@ -11,7 +11,6 @@ import {
 import { mux } from "@/lib/mux";
 import { workflow } from "@/lib/workflow";
 
-import { db } from "@/db";
 import {
   updateVideoSchema,
   users,
@@ -19,6 +18,7 @@ import {
   videos,
   videoViews,
 } from "@/db/schema";
+import { db } from "@/db";
 
 export const videoRouter = createTRPCRouter({
   create: protectedProcedure.mutation(async ({ ctx }) => {
