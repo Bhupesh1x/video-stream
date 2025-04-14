@@ -15,7 +15,7 @@ export function VideoIdView({ videoId }: Props) {
           <div className="block lg:hidden">
             <SuggestionsSection />
           </div>
-          <CommentSection />
+          <CommentSection videoId={videoId} />
         </div>
         <div className="hidden lg:block lg:w-[280px] xl:w-[360px] 2xl:w-[480px]">
           <SuggestionsSection />

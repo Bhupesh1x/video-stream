@@ -239,3 +239,7 @@ export const commentsRealtions = relations(comments, ({ one }) => ({
     references: [videos.id],
   }),
 }));
+
+export const commentSelectSchema = createSelectSchema(comments);
+export const commentInsertSchema = createInsertSchema(comments);
+export const commentUpdateSchema = createUpdateSchema(comments);
