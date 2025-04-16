@@ -5,6 +5,7 @@ import { ErrorBoundary } from "react-error-boundary";
 
 import { trpc } from "@/trpc/client";
 import { CommentForm } from "@/features/comments/components/CommentForm";
+import { CommentItem } from "@/features/comments/components/CommentItem";
 
 type Props = {
   videoId: string;
@@ -19,7 +20,11 @@ function CommentSectionSuspense({ videoId }: Props) {
         <h1>{0} Comments</h1>
         <CommentForm videoId={videoId} />
       </div>
-      <h1>{JSON.stringify(comments)}</h1>
+      <div className="flex flex-col gap-4 mt-2">
+        {comments.map((comment) => (
+          <CommentItem key={comment.id} comment={comment} />
+        ))}
+      </div>
     </div>
   );
 }
