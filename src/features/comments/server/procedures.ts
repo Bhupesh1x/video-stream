@@ -6,6 +6,7 @@ import {
   createTRPCRouter,
   protectedProcedure,
 } from "@/trpc/init";
+import { TRPCError } from "@trpc/server";
 
 import { db } from "@/db";
 import { comments, users } from "@/db/schema";
@@ -84,7 +85,7 @@ export const commentsRouter = createTRPCRouter({
       ]);
 
       if (dataResult.status !== "fulfilled") {
-        throw new Error("Failed to fetch comments or count.");
+        throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
       }
 
       let totalCount = { count: 0 };

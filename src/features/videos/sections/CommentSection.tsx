@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense } from "react";
+import { Loader2Icon } from "lucide-react";
 import { ErrorBoundary } from "react-error-boundary";
 
 import { trpc } from "@/trpc/client";
@@ -49,7 +50,11 @@ function CommentSectionSuspense({ videoId }: Props) {
 }
 
 export function CommentSectionSkeleton() {
-  return <p>Loading...</p>;
+  return (
+    <div className="mt-6 flex items-center justify-center">
+      <Loader2Icon className="text-muted-foreground size-7 animate-spin" />
+    </div>
+  );
 }
 
 export function CommentSection({ videoId }: Props) {
