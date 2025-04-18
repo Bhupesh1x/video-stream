@@ -6,14 +6,14 @@ import { UserAvatar } from "@/components/UserAvatar";
 import { Comments } from "../types";
 
 type Props = {
-  comment: Comments[number];
+  comment: Comments["items"][number];
 };
 
 export function CommentItem({ comment }: Props) {
   return (
     <div>
       <div className="flex justify-between gap-2">
-        <div className="flex items-center gap-2">
+        <div className="flex gap-2">
           <UserAvatar
             size="lg"
             imageUrl={comment?.user?.imageUrl || "/images/user-placeholder.svg"}
