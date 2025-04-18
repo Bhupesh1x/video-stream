@@ -1,7 +1,13 @@
+import {
+  Trash2Icon,
+  MoreVerticalIcon,
+  MessageSquareIcon,
+  ThumbsUpIcon,
+  ThumbsDownIcon,
+} from "lucide-react";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
 import { useAuth, useClerk } from "@clerk/nextjs";
-import { Trash2Icon, MoreVerticalIcon, MessageSquareIcon } from "lucide-react";
 
 import { trpc } from "@/trpc/client";
 
@@ -66,6 +72,28 @@ export function CommentItem({ comment }: Props) {
               </p>
             </div>
             <p>{comment?.value || ""}</p>
+            <div className="flex items-center gap-1">
+              <Button
+                size="icon"
+                variant="ghost"
+                disabled={false}
+                onClick={() => {}}
+                className="size-8"
+              >
+                <ThumbsUpIcon />
+              </Button>
+              <span className="text-sm text-muted-foreground">0</span>
+              <Button
+                size="icon"
+                variant="ghost"
+                disabled={false}
+                onClick={() => {}}
+                className="size-8"
+              >
+                <ThumbsDownIcon />
+              </Button>
+              <span className="text-sm text-muted-foreground">0</span>
+            </div>
           </div>
         </div>
         <DropdownMenu>
