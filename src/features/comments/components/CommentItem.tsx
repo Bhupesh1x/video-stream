@@ -1,6 +1,17 @@
+import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
-import { MoreHorizontalIcon } from "lucide-react";
+import { useAuth, useClerk } from "@clerk/nextjs";
+import { Trash2Icon, MoreVerticalIcon, MessageSquareIcon } from "lucide-react";
 
+import { trpc } from "@/trpc/client";
+
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 import { UserAvatar } from "@/components/UserAvatar";
 
 import { Comments } from "../types";
@@ -10,6 +21,32 @@ type Props = {
 };
 
 export function CommentItem({ comment }: Props) {
+  const { openSignIn } = useClerk();
+  const { userId: clerkUserId } = useAuth();
+
+  const utils = trpc.useUtils();
+  const deleteComment = trpc.comments.remove.useMutation();
+
+  function onDelete() {
+    deleteComment.mutate(
+      { id: comment.id },
+      {
+        onSuccess: () => {
+          toast.success("Comment deleted");
+
+          utils.comments.getMany.invalidate({ videoId: comment.videoId });
+        },
+        onError: (error) => {
+          toast.error("Failed to delete comment");
+
+          if (error.data?.code === "UNAUTHORIZED") {
+            openSignIn();
+          }
+        },
+      }
+    );
+  }
+
   return (
     <div>
       <div className="flex justify-between gap-2">
@@ -31,7 +68,28 @@ export function CommentItem({ comment }: Props) {
             <p>{comment?.value || ""}</p>
           </div>
         </div>
-        <MoreHorizontalIcon />
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button size="icon" variant="ghost" className="size-8 shrink-0">
+              <MoreVerticalIcon />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem>
+              <MessageSquareIcon className="size-4 mr-2" />
+              Reply
+            </DropdownMenuItem>
+            {comment?.user?.clerkId === clerkUserId ? (
+              <DropdownMenuItem
+                onClick={onDelete}
+                disabled={deleteComment.isPending}
+              >
+                <Trash2Icon className="size-4 mr-2" />
+                Delete
+              </DropdownMenuItem>
+            ) : null}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
   );
