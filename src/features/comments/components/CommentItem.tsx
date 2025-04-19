@@ -27,11 +27,14 @@ type Props = {
 };
 
 export function CommentItem({ comment }: Props) {
-  const { openSignIn } = useClerk();
+  const { openSignIn, isSignedIn } = useClerk();
   const { userId: clerkUserId } = useAuth();
 
   const utils = trpc.useUtils();
   const deleteComment = trpc.comments.remove.useMutation();
+
+  const likeComment = trpc.commentReactions.like.useMutation();
+  const dislikeComment = trpc.commentReactions.dislike.useMutation();
 
   function onDelete() {
     deleteComment.mutate(
@@ -46,6 +49,50 @@ export function CommentItem({ comment }: Props) {
           toast.error("Failed to delete comment");
 
           if (error.data?.code === "UNAUTHORIZED") {
+            openSignIn();
+          }
+        },
+      }
+    );
+  }
+
+  function onLike() {
+    if (!isSignedIn) {
+      return openSignIn();
+    }
+
+    likeComment.mutate(
+      { commentId: comment.id },
+      {
+        onSuccess: () => {
+          utils.comments.getMany.invalidate({ videoId: comment.videoId });
+        },
+        onError: (error) => {
+          toast.error("Failed to like comment");
+
+          if (error?.data?.code === "UNAUTHORIZED") {
+            openSignIn();
+          }
+        },
+      }
+    );
+  }
+
+  function onDisLike() {
+    if (!isSignedIn) {
+      return openSignIn();
+    }
+
+    dislikeComment.mutate(
+      { commentId: comment.id },
+      {
+        onSuccess: () => {
+          utils.comments.getMany.invalidate({ videoId: comment.videoId });
+        },
+        onError: (error) => {
+          toast.error("Failed to dislike comment");
+
+          if (error?.data?.code === "UNAUTHORIZED") {
             openSignIn();
           }
         },
@@ -76,8 +123,8 @@ export function CommentItem({ comment }: Props) {
               <Button
                 size="icon"
                 variant="ghost"
-                disabled={false}
-                onClick={() => {}}
+                disabled={likeComment.isPending || dislikeComment.isPending}
+                onClick={onLike}
                 className="size-8"
               >
                 <ThumbsUpIcon
@@ -92,8 +139,8 @@ export function CommentItem({ comment }: Props) {
               <Button
                 size="icon"
                 variant="ghost"
-                disabled={false}
-                onClick={() => {}}
+                disabled={likeComment.isPending || dislikeComment.isPending}
+                onClick={onDisLike}
                 className="size-8"
               >
                 <ThumbsDownIcon
