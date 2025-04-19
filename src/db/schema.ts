@@ -247,7 +247,7 @@ export const commentInsertSchema = createInsertSchema(comments);
 export const commentUpdateSchema = createUpdateSchema(comments);
 
 export const commentReactions = pgTable(
-  "comments_reactions",
+  "comment_reactions",
   {
     userId: uuid("user_id")
       .references(() => users.id, { onDelete: "cascade" })
