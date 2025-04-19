@@ -80,9 +80,15 @@ export function CommentItem({ comment }: Props) {
                 onClick={() => {}}
                 className="size-8"
               >
-                <ThumbsUpIcon />
+                <ThumbsUpIcon
+                  className={`${
+                    comment?.viewerReaction === "like" ? "fill-black" : ""
+                  } `}
+                />
               </Button>
-              <span className="text-sm text-muted-foreground">0</span>
+              <span className="text-sm text-muted-foreground">
+                {comment?.likeCount || 0}
+              </span>
               <Button
                 size="icon"
                 variant="ghost"
@@ -90,9 +96,15 @@ export function CommentItem({ comment }: Props) {
                 onClick={() => {}}
                 className="size-8"
               >
-                <ThumbsDownIcon />
+                <ThumbsDownIcon
+                  className={`${
+                    comment?.viewerReaction === "dislike" ? "fill-black" : ""
+                  } `}
+                />
               </Button>
-              <span className="text-sm text-muted-foreground">0</span>
+              <span className="text-sm text-muted-foreground">
+                {comment?.dislikeCount || 0}
+              </span>
             </div>
           </div>
         </div>
