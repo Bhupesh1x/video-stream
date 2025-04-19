@@ -12,6 +12,7 @@ import {
   integer,
   pgEnum,
   primaryKey,
+  foreignKey,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
@@ -215,20 +216,33 @@ export const subscriptionRelations = relations(subscriptions, ({ one }) => ({
   }),
 }));
 
-export const comments = pgTable("comments", {
-  id: uuid("id").primaryKey().defaultRandom().notNull(),
-  value: text("value").notNull(),
+export const comments = pgTable(
+  "comments",
+  {
+    id: uuid("id").primaryKey().defaultRandom().notNull(),
+    value: text("value").notNull(),
 
-  userId: uuid("user_id")
-    .references(() => users.id, { onDelete: "cascade" })
-    .notNull(),
-  videoId: uuid("video_id")
-    .references(() => videos.id, { onDelete: "cascade" })
-    .notNull(),
+    parentId: uuid("parent_id"),
+    userId: uuid("user_id")
+      .references(() => users.id, { onDelete: "cascade" })
+      .notNull(),
+    videoId: uuid("video_id")
+      .references(() => videos.id, { onDelete: "cascade" })
+      .notNull(),
 
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
-});
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (t) => {
+    return [
+      foreignKey({
+        columns: [t.parentId],
+        foreignColumns: [t.id],
+        name: "comments_parent_id_fkey",
+      }),
+    ];
+  }
+);
 
 export const commentsRealtions = relations(comments, ({ one, many }) => ({
   user: one(users, {
@@ -239,7 +253,15 @@ export const commentsRealtions = relations(comments, ({ one, many }) => ({
     fields: [comments.videoId],
     references: [videos.id],
   }),
+  parent: one(comments, {
+    fields: [comments.parentId],
+    references: [comments.id],
+    relationName: "comments_parent_id_fkey",
+  }),
   commentReactions: many(commentReactions),
+  replies: many(comments, {
+    relationName: "comments_parent_id_fkey",
+  }),
 }));
 
 export const commentSelectSchema = createSelectSchema(comments);
