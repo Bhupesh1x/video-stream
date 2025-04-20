@@ -191,30 +191,33 @@ export function CommentItem({ comment, variant = "comment" }: Props) {
             </div>
           </div>
         </div>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button size="icon" variant="ghost" className="size-8 shrink-0">
-              <MoreVerticalIcon />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {variant === "comment" ? (
-              <DropdownMenuItem onClick={openReply}>
-                <MessageSquareIcon className="size-4 mr-2" />
-                Reply
-              </DropdownMenuItem>
-            ) : null}
-            {comment?.user?.clerkId === clerkUserId ? (
-              <DropdownMenuItem
-                onClick={onDelete}
-                disabled={deleteComment.isPending}
-              >
-                <Trash2Icon className="size-4 mr-2" />
-                Delete
-              </DropdownMenuItem>
-            ) : null}
-          </DropdownMenuContent>
-        </DropdownMenu>
+        {comment?.user?.clerkId !== clerkUserId &&
+        variant === "reply" ? null : (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button size="icon" variant="ghost" className="size-8 shrink-0">
+                <MoreVerticalIcon />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {variant === "comment" ? (
+                <DropdownMenuItem onClick={openReply}>
+                  <MessageSquareIcon className="size-4 mr-2" />
+                  Reply
+                </DropdownMenuItem>
+              ) : null}
+              {comment?.user?.clerkId === clerkUserId ? (
+                <DropdownMenuItem
+                  onClick={onDelete}
+                  disabled={deleteComment.isPending}
+                >
+                  <Trash2Icon className="size-4 mr-2" />
+                  Delete
+                </DropdownMenuItem>
+              ) : null}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
       </div>
       {isReplyOpen && variant === "comment" ? (
         <div className="pl-14 mt-2">
