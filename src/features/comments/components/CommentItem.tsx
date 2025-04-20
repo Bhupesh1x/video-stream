@@ -4,8 +4,11 @@ import {
   MessageSquareIcon,
   ThumbsUpIcon,
   ThumbsDownIcon,
+  ChevronUpIcon,
+  ChevronDownIcon,
 } from "lucide-react";
 import { toast } from "sonner";
+import { useState } from "react";
 import { formatDistanceToNow } from "date-fns";
 import { useAuth, useClerk } from "@clerk/nextjs";
 
@@ -21,14 +24,20 @@ import { Button } from "@/components/ui/button";
 import { UserAvatar } from "@/components/UserAvatar";
 
 import { Comments } from "../types";
+import { CommentForm } from "./CommentForm";
+import { CommentRepliesItem } from "./CommentRepliesItem";
 
 type Props = {
   comment: Comments["items"][number];
+  variant?: "comment" | "reply";
 };
 
-export function CommentItem({ comment }: Props) {
+export function CommentItem({ comment, variant = "comment" }: Props) {
   const { openSignIn, isSignedIn } = useClerk();
   const { userId: clerkUserId } = useAuth();
+
+  const [isReplyOpen, setIsReplyOpen] = useState(false);
+  const [isRepliesOpen, setIsRepliesOpen] = useState(false);
 
   const utils = trpc.useUtils();
   const deleteComment = trpc.comments.remove.useMutation();
@@ -100,17 +109,34 @@ export function CommentItem({ comment }: Props) {
     );
   }
 
+  function openReply() {
+    setIsReplyOpen(true);
+  }
+
+  function closeReply() {
+    setIsReplyOpen(false);
+  }
+
+  function onToogleReplies() {
+    setIsRepliesOpen((prev) => !prev);
+  }
+
+  function onReplySaveSuccess() {
+    setIsReplyOpen(false);
+    setIsRepliesOpen(true);
+  }
+
   return (
     <div>
       <div className="flex justify-between gap-2">
         <div className="flex gap-2">
           <UserAvatar
-            size="lg"
+            size={variant === "comment" ? "lg" : "sm"}
             imageUrl={comment?.user?.imageUrl || "/images/user-placeholder.svg"}
             name={comment?.user?.name || "User"}
           />
           <div className="flex flex-col gap-[2px]">
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1 w-full">
               <p className="text-sm font-semibold">
                 {comment?.user?.name || "User"}{" "}
               </p>
@@ -152,6 +178,16 @@ export function CommentItem({ comment }: Props) {
               <span className="text-sm text-muted-foreground">
                 {comment?.dislikeCount || 0}
               </span>
+              {variant === "comment" ? (
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="size-8 min-w-14 font-semibold"
+                  onClick={openReply}
+                >
+                  Reply
+                </Button>
+              ) : null}
             </div>
           </div>
         </div>
@@ -162,10 +198,12 @@ export function CommentItem({ comment }: Props) {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem>
-              <MessageSquareIcon className="size-4 mr-2" />
-              Reply
-            </DropdownMenuItem>
+            {variant === "comment" ? (
+              <DropdownMenuItem onClick={openReply}>
+                <MessageSquareIcon className="size-4 mr-2" />
+                Reply
+              </DropdownMenuItem>
+            ) : null}
             {comment?.user?.clerkId === clerkUserId ? (
               <DropdownMenuItem
                 onClick={onDelete}
@@ -178,6 +216,29 @@ export function CommentItem({ comment }: Props) {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
+      {isReplyOpen && variant === "comment" ? (
+        <div className="pl-14 mt-2">
+          <CommentForm
+            videoId={comment?.videoId || ""}
+            onSuccess={onReplySaveSuccess}
+            variant="reply"
+            parentId={comment.id}
+            closeReply={closeReply}
+          />
+        </div>
+      ) : null}
+      {variant === "comment" && comment?.repliesCount > 0 ? (
+        <div className="pl-14">
+          <Button size="sm" variant="tertiary" onClick={onToogleReplies}>
+            {isRepliesOpen ? <ChevronUpIcon /> : <ChevronDownIcon />}{" "}
+            {comment.repliesCount} replies
+          </Button>
+        </div>
+      ) : null}
+
+      {isRepliesOpen ? (
+        <CommentRepliesItem videoId={comment.videoId} parentId={comment.id} />
+      ) : null}
     </div>
   );
 }

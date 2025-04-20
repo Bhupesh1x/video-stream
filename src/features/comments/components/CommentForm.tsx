@@ -19,7 +19,10 @@ import { UserAvatar } from "@/components/UserAvatar";
 
 type Props = {
   videoId: string;
+  parentId?: string;
+  variant?: "comment" | "reply";
   onSuccess?: () => void;
+  closeReply?: () => void;
 };
 
 const formSchema = z.object({
@@ -27,7 +30,13 @@ const formSchema = z.object({
   value: z.string().trim().min(1, "Required"),
 });
 
-export function CommentForm({ videoId, onSuccess }: Props) {
+export function CommentForm({
+  videoId,
+  parentId,
+  variant = "comment",
+  onSuccess,
+  closeReply,
+}: Props) {
   const { openSignIn } = useClerk();
   const { user, isSignedIn } = useUser();
 
@@ -50,7 +59,7 @@ export function CommentForm({ videoId, onSuccess }: Props) {
     }
 
     createComment.mutate(
-      { ...values },
+      { ...values, parentId: parentId || null },
       {
         onSuccess: () => {
           toast.success("Comment added");
@@ -67,6 +76,13 @@ export function CommentForm({ videoId, onSuccess }: Props) {
         },
       }
     );
+  }
+
+  function handleClose() {
+    if (closeReply) {
+      form.reset();
+      closeReply?.();
+    }
   }
 
   return (
@@ -87,7 +103,11 @@ export function CommentForm({ videoId, onSuccess }: Props) {
                 <FormControl>
                   <Textarea
                     {...field}
-                    placeholder="Add a comment..."
+                    placeholder={
+                      variant === "comment"
+                        ? "Add a comment..."
+                        : "Add your reply..."
+                    }
                     className="resize-none min-h-0 overflow-hidden"
                   />
                 </FormControl>
@@ -96,12 +116,21 @@ export function CommentForm({ videoId, onSuccess }: Props) {
             )}
           />
         </div>
-        <Button
-          className="ml-auto flex justify-end my-2"
-          disabled={createComment.isPending}
-        >
-          Comment
-        </Button>
+        <div className="ml-auto flex justify-end my-2 gap-2">
+          {variant === "reply" ? (
+            <Button
+              variant="secondary"
+              type="button"
+              onClick={handleClose}
+              disabled={createComment.isPending}
+            >
+              Cancel
+            </Button>
+          ) : null}
+          <Button disabled={createComment.isPending}>
+            {variant === "comment" ? "Comment" : "Reply"}
+          </Button>
+        </div>
       </form>
     </Form>
   );
