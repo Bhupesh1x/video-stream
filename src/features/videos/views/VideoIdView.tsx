@@ -13,12 +13,12 @@ export function VideoIdView({ videoId }: Props) {
         <div className="flex-1">
           <VideoSection videoId={videoId} />
           <div className="block lg:hidden">
-            <SuggestionsSection />
+            <SuggestionsSection videoId={videoId} isManual />
           </div>
           <CommentSection videoId={videoId} />
         </div>
         <div className="hidden lg:block lg:w-[280px] xl:w-[360px] 2xl:w-[480px]">
-          <SuggestionsSection />
+          <SuggestionsSection videoId={videoId} />
         </div>
       </div>
     </div>

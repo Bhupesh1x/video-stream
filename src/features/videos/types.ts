@@ -3,3 +3,6 @@ import { AppRouter } from "@/trpc/routers/_app";
 
 export type VideoWithUserInfo =
   inferRouterOutputs<AppRouter>["video"]["getOne"];
+
+export type VideosType =
+  inferRouterOutputs<AppRouter>["suggestions"]["getMany"];
