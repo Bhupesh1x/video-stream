@@ -3,9 +3,10 @@
 import { trpc } from "@/trpc/client";
 import { DEFAULT_LIMIT } from "@/constants";
 
+import { InfiniteScroll } from "@/components/InfiniteScroll";
+
 import { VideoRowCard } from "../components/VideoRowCard";
 import { VideoGridCard } from "../components/VideoGridCard";
-import { InfiniteScroll } from "@/components/InfiniteScroll";
 
 type Props = {
   videoId: string;
