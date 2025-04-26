@@ -1,9 +1,10 @@
 import { z } from "zod";
 import { and, desc, eq, getTableColumns, lt, or } from "drizzle-orm";
 
+import { baseProcedure, createTRPCRouter } from "@/trpc/init";
+
 import { db } from "@/db";
 import { users, videoReactions, videos, videoViews } from "@/db/schema";
-import { baseProcedure, createTRPCRouter } from "@/trpc/init";
 
 export const suggestionRouter = createTRPCRouter({
   getMany: baseProcedure
