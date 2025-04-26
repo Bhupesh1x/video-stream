@@ -75,6 +75,7 @@ function VideoFormSectionSuspence({ videoId }: Props) {
   const restoreThumbnail = trpc.video.restore.useMutation();
   const generateTitle = trpc.video.generateTitle.useMutation();
   const generateDescription = trpc.video.generateDescription.useMutation();
+  const revalidateVideo = trpc.video.revalidate.useMutation();
 
   const form = useForm<z.infer<typeof updateVideoSchema>>({
     resolver: zodResolver(updateVideoSchema),
@@ -189,6 +190,23 @@ function VideoFormSectionSuspence({ videoId }: Props) {
     );
   }
 
+  function onRevalidate(id: string) {
+    revalidateVideo.mutate(
+      { videoId: id },
+      {
+        onSuccess: () => {
+          toast.success("Video revalidated");
+
+          utils.studio.getMany.invalidate();
+          utils.studio.getOne.invalidate({ id });
+        },
+        onError: () => {
+          toast.error("Failed to revalidate video");
+        },
+      }
+    );
+  }
+
   return (
     <>
       <ThumbnailUploadModal
@@ -207,7 +225,11 @@ function VideoFormSectionSuspence({ videoId }: Props) {
             <div className="flex items-center gap-x-1">
               <Button
                 type="submit"
-                disabled={deleteVideo.isPending || updateVideo.isPending}
+                disabled={
+                  deleteVideo.isPending ||
+                  updateVideo.isPending ||
+                  revalidateVideo.isPending
+                }
               >
                 {updateVideo.isPending ? "Saving..." : "Save"}
               </Button>
@@ -218,6 +240,18 @@ function VideoFormSectionSuspence({ videoId }: Props) {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
+                  <DropdownMenuItem
+                    className="cursor-pointer"
+                    onClick={() => onRevalidate(video.id)}
+                    disabled={
+                      deleteVideo.isPending ||
+                      updateVideo.isPending ||
+                      revalidateVideo.isPending
+                    }
+                  >
+                    <RotateCcwIcon className="size-4 mr-2" />
+                    Revalidate
+                  </DropdownMenuItem>
                   <DropdownMenuItem
                     className="cursor-pointer"
                     onClick={() => onDelete(video.id)}
