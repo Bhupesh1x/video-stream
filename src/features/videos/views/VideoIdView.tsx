@@ -8,7 +8,7 @@ type Props = {
 
 export function VideoIdView({ videoId }: Props) {
   return (
-    <div className="pt-2.5 px-4 max-w-[1700px] mx-auto mb-4">
+    <div className="pt-2.5 px-4 max-w-[1700px] mx-auto mb-10">
       <div className="flex gap-4">
         <div className="flex-1">
           <VideoSection videoId={videoId} />

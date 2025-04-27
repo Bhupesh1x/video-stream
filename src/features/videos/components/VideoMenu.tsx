@@ -6,6 +6,8 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
+import { APP_URL } from "@/constants";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,9 +24,7 @@ type Props = {
 
 export function VideoMenu({ videoId, variant = "secondary", onRemove }: Props) {
   function onShare() {
-    const fullUrl = `${
-      process.env.VERCEL_URL || "http://localhost:3000"
-    }/videos/${videoId}`;
+    const fullUrl = `${APP_URL}/videos/${videoId}`;
 
     navigator.clipboard.writeText(fullUrl || "");
 

@@ -3,6 +3,8 @@ import { HydrateClient, trpc } from "@/trpc/server";
 
 import { SearchView } from "@/features/search/views/SearchView";
 
+export const dynamic = "force-dynamic";
+
 type Props = {
   searchParams: Promise<{
     query: string | undefined;

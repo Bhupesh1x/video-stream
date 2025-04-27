@@ -11,7 +11,7 @@ type Props = {
 
 export function SearchView({ searchParams }: Props) {
   return (
-    <div className="max-w-[2400px] mx-auto mb-10 px-4 py-2.5 space-y-3">
+    <div className="max-w-[1700px] mx-auto mb-10 px-4 py-2.5 space-y-6">
       <CategoriesSection categoryId={searchParams?.categoryId} />
       <ResultsSection
         query={searchParams.query}

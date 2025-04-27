@@ -8,6 +8,8 @@ type Props = {
   }>;
 };
 
+export const dynamic = "force-dynamic";
+
 async function Page({ searchParams }: Props) {
   const { categoryId } = await searchParams;
   void trpc.categories.getMany.prefetch();

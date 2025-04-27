@@ -86,7 +86,10 @@ function ResultsSectionSkeleton() {
 
 export function ResultsSection({ query, categoryId }: Props) {
   return (
-    <Suspense fallback={<ResultsSectionSkeleton />}>
+    <Suspense
+      key={`${query}-${categoryId}`}
+      fallback={<ResultsSectionSkeleton />}
+    >
       <ErrorBoundary fallback={<p>Error</p>}>
         <ResultsSectionSuspence query={query} categoryId={categoryId} />
       </ErrorBoundary>

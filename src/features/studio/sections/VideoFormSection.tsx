@@ -23,6 +23,7 @@ import { Suspense, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { zodResolver } from "@hookform/resolvers/zod";
 
+import { APP_URL } from "@/constants";
 import { snakeCaseToTitle } from "@/lib/utils";
 import { updateVideoSchema } from "@/db/schema";
 
@@ -97,9 +98,7 @@ function VideoFormSectionSuspence({ videoId }: Props) {
     });
   }
 
-  const fullUrl = `${
-    process.env.VERCEL_URL || "http://localhost:3000"
-  }/videos/${video.id}`;
+  const fullUrl = `${APP_URL}/videos/${video.id}`;
 
   const [isCopied, setIsCopied] = useState(false);
 

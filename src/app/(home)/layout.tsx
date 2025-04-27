@@ -7,6 +7,8 @@ type Props = {
   children: React.ReactNode;
 };
 
+export const dynamic = "force-dynamic";
+
 function Layout({ children }: Props) {
   return (
     <SidebarProvider>
