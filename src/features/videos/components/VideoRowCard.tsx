@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { useMemo } from "react";
 
 import { UserInfo } from "@/features/users/components/UserInfo";
 
@@ -7,18 +8,34 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Skeleton } from "@/components/ui/skeleton";
 import { UserAvatar } from "@/components/UserAvatar";
 
 import { VideoMenu } from "./VideoMenu";
 import { VideoThumbnail } from "./VideoThumbnail";
 
 import { VideosType } from "../types";
-import { useMemo } from "react";
 
 interface Props {
   video: VideosType["items"][number];
   onRemove?: () => void;
   variant?: "default" | "compact";
+}
+
+export function VideoRowCardSkeleton() {
+  return (
+    <div className="flex gap-2">
+      <div className="relative w-[60%]">
+        <div className="relative aspect-video rounded-xl w-full overflow-hidden">
+          <Skeleton className="size-full" />
+        </div>
+      </div>
+      <div className="space-y-2">
+        <Skeleton className="h-5 w-[95%]" />
+        <Skeleton className="h-5 w-[80px]" />
+      </div>
+    </div>
+  );
 }
 
 export function VideoRowCard({ video, variant = "default" }: Props) {

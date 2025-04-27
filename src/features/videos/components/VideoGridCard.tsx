@@ -4,6 +4,7 @@ import { formatDistanceToNow } from "date-fns";
 
 import { UserInfo } from "@/features/users/components/UserInfo";
 
+import { Skeleton } from "@/components/ui/skeleton";
 import { UserAvatar } from "@/components/UserAvatar";
 
 import { VideosType } from "../types";
@@ -12,6 +13,20 @@ import { VideoThumbnail } from "./VideoThumbnail";
 interface Props {
   video: VideosType["items"][number];
   onRemove?: () => void;
+}
+
+export function VideoGridCardSkeleton() {
+  return (
+    <div className="w-full flex flex-col gap-2">
+      <div className="relative aspect-video rounded-xl w-full overflow-hidden">
+        <Skeleton className="size-full" />
+      </div>
+      <div className="space-y-2">
+        <Skeleton className="h-5 w-[95%]" />
+        <Skeleton className="h-5 w-[80px]" />
+      </div>
+    </div>
+  );
 }
 
 export function VideoGridCard({ video }: Props) {
