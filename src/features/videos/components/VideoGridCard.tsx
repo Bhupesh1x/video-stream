@@ -9,6 +9,7 @@ import { UserAvatar } from "@/components/UserAvatar";
 
 import { VideosType } from "../types";
 import { VideoThumbnail } from "./VideoThumbnail";
+import { VideoMenu } from "./VideoMenu";
 
 interface Props {
   video: VideosType["items"][number];
@@ -23,7 +24,7 @@ export function VideoGridCardSkeleton() {
       </div>
       <div className="space-y-2">
         <Skeleton className="h-5 w-[95%]" />
-        <Skeleton className="h-5 w-[80px]" />
+        <Skeleton className="h-5 w-[80%]" />
       </div>
     </div>
   );
@@ -51,31 +52,37 @@ export function VideoGridCard({ video }: Props) {
             thumbnailImageUrl={video?.thumbnailUrl ?? ""}
           />
         </Link>
-        <div className="flex gap-2">
-          <Link href={`/users/${video.user.id}`}>
-            <UserAvatar
-              imageUrl={video.user?.imageUrl || ""}
-              name={video.user?.name}
-            />
-          </Link>
+        <div className="flex gap-2 w-full justify-between">
           <div>
-            <Link href={`/videos/${video.id}`}>
-              <p
-                className="text-lg font-semibold line-clamp-2"
-                title={video.title}
-              >
-                {video.title}
-              </p>
-            </Link>
-            <Link href={`/users/${video.user.id}`}>
-              <UserInfo name={video?.user?.name || ""} />
-            </Link>
-            <Link href={`/videos/${video.id}`}>
-              <p className="text-muted-foreground my-1">
-                {compactViews} views • {compactDate ?? ""}
-              </p>
-            </Link>
+            <div>
+              <Link href={`/videos/${video.id}`}>
+                <p
+                  className="text-lg font-semibold line-clamp-2"
+                  title={video.title}
+                >
+                  {video.title}
+                </p>
+              </Link>
+              <div className="flex items-center gap-2">
+                <Link href={`/users/${video.user.id}`}>
+                  <UserAvatar
+                    imageUrl={video.user?.imageUrl || ""}
+                    name={video.user?.name}
+                    size="sm"
+                  />
+                </Link>
+                <Link href={`/users/${video.user.id}`}>
+                  <UserInfo name={video?.user?.name || ""} />
+                </Link>
+              </div>
+              <Link href={`/videos/${video.id}`}>
+                <p className="text-muted-foreground my-1">
+                  {compactViews} views • {compactDate ?? ""}
+                </p>
+              </Link>
+            </div>
           </div>
+          <VideoMenu videoId={video.id} />
         </div>
       </div>
     </div>
