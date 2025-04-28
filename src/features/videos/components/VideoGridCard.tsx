@@ -54,32 +54,29 @@ export function VideoGridCard({ video }: Props) {
         </Link>
         <div className="flex gap-2 w-full justify-between">
           <div>
-            <div>
-              <Link href={`/videos/${video.id}`}>
-                <p
-                  className="text-lg font-semibold line-clamp-2"
-                  title={video.title}
-                >
-                  {video.title}
-                </p>
+            <div className="flex gap-2">
+              <Link href={`/users/${video.user.id}`}>
+                <UserAvatar
+                  imageUrl={video.user?.imageUrl || ""}
+                  name={video.user?.name}
+                />
               </Link>
-              <div className="flex items-center gap-2">
-                <Link href={`/users/${video.user.id}`}>
-                  <UserAvatar
-                    imageUrl={video.user?.imageUrl || ""}
-                    name={video.user?.name}
-                    size="sm"
-                  />
+
+              <div>
+                <Link href={`/videos/${video.id}`}>
+                  <p className="font-semibold line-clamp-2" title={video.title}>
+                    {video.title}
+                  </p>
                 </Link>
                 <Link href={`/users/${video.user.id}`}>
                   <UserInfo name={video?.user?.name || ""} />
                 </Link>
+                <Link href={`/videos/${video.id}`}>
+                  <p className="text-muted-foreground my-1">
+                    {compactViews} views • {compactDate ?? ""}
+                  </p>
+                </Link>
               </div>
-              <Link href={`/videos/${video.id}`}>
-                <p className="text-muted-foreground my-1">
-                  {compactViews} views • {compactDate ?? ""}
-                </p>
-              </Link>
             </div>
           </div>
           <VideoMenu videoId={video.id} />

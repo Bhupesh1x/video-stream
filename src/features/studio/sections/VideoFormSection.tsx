@@ -353,7 +353,7 @@ function VideoFormSectionSuspence({ videoId }: Props) {
                         fill
                         src={video.thumbnailUrl || "/images/placeholder.svg"}
                         alt="thumbnail-img"
-                        className="object-cover bg-gray-100 rounded-xl"
+                        className="object-contain bg-gray-100 rounded-xl"
                       />
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>

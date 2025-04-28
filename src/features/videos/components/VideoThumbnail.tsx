@@ -24,7 +24,7 @@ export function VideoThumbnail({
             thumbnailImageUrl ? thumbnailImageUrl : "/images/placeholder.svg"
           }
           alt={title}
-          className="h-full w-full object-cover bg-gray-200 group-hover:opacity-0"
+          className="h-full w-full object-contain bg-gray-200 group-hover:opacity-0"
         />
 
         <Image
