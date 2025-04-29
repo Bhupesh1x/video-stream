@@ -24,7 +24,7 @@ const routes = [
     auth: true,
   },
   {
-    url: "/trending",
+    url: "/feed/trending",
     title: "Trending",
     icon: FlameIcon,
   },
