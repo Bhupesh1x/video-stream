@@ -34,6 +34,8 @@ export function useSubscriptions({
           onSuccess: () => {
             toast.success("Unsubscribed");
 
+            utils.video.getManySubscriptions.invalidate();
+
             if (fromVideoId) {
               utils.video.getOne.invalidate({ videoId: fromVideoId });
             }
@@ -51,6 +53,8 @@ export function useSubscriptions({
         {
           onSuccess: () => {
             toast.success("Subscribed");
+
+            utils.video.getManySubscriptions.invalidate();
 
             if (fromVideoId) {
               utils.video.getOne.invalidate({ videoId: fromVideoId });
