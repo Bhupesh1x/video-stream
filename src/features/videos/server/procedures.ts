@@ -409,4 +409,82 @@ export const videoRouter = createTRPCRouter({
         nextCursor,
       };
     }),
+  getManyTrending: baseProcedure
+    .input(
+      z.object({
+        cursor: z
+          .object({
+            id: z.string().uuid(),
+            viewsCount: z.number(),
+          })
+          .nullish(),
+        limit: z.number().min(1).max(100),
+      })
+    )
+    .query(async ({ input }) => {
+      const { limit, cursor } = input;
+
+      const viewsCountSubquery = db.$count(
+        videoViews,
+        eq(videoViews.videoId, videos.id)
+      );
+
+      const data = await db
+        .select({
+          ...getTableColumns(videos),
+          user: users,
+          viewsCount: viewsCountSubquery,
+          likeCount: db.$count(
+            videoReactions,
+            and(
+              eq(videoReactions.videoId, videos.id),
+              eq(videoReactions.type, "like")
+            )
+          ),
+          dislikeCount: db.$count(
+            videoReactions,
+            and(
+              eq(videoReactions.videoId, videos.id),
+              eq(videoReactions.type, "dislike")
+            )
+          ),
+        })
+        .from(videos)
+        .innerJoin(users, eq(videos.userId, users.id))
+        .where(
+          and(
+            eq(videos.visibility, "public"),
+            cursor
+              ? or(
+                  lt(viewsCountSubquery, cursor.viewsCount),
+                  and(
+                    eq(viewsCountSubquery, cursor.viewsCount),
+                    lt(videos.id, cursor.id)
+                  )
+                )
+              : undefined
+          )
+        )
+        .orderBy(desc(viewsCountSubquery), desc(videos.id))
+        // Load 1 extra to check if there is more data
+        .limit(limit + 1);
+
+      const hasMoreData = data?.length > limit;
+
+      const items = hasMoreData ? data.slice(0, -1) : data;
+
+      const lastItem = items[items?.length - 1];
+
+      const nextCursor = hasMoreData
+        ? {
+            id: lastItem.id,
+            viewsCount: lastItem.viewsCount,
+          }
+        : null;
+
+      return {
+        items,
+        nextCursor,
+      };
+    }),
 });
