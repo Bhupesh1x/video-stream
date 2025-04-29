@@ -487,4 +487,92 @@ export const videoRouter = createTRPCRouter({
         nextCursor,
       };
     }),
+  getManySubscriptions: protectedProcedure
+    .input(
+      z.object({
+        cursor: z
+          .object({
+            id: z.string().uuid(),
+            updatedAt: z.date(),
+          })
+          .nullish(),
+        limit: z.number().min(1).max(100),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const { id: userId } = ctx.user;
+      const { limit, cursor } = input;
+
+      const videoSubscriptions = db
+        .$with("video_subscriptions")
+        .as(
+          db
+            .select({ createrId: subscriptions.creatorId })
+            .from(subscriptions)
+            .where(eq(subscriptions.viewerId, userId))
+        );
+
+      const data = await db
+        .with(videoSubscriptions)
+        .select({
+          ...getTableColumns(videos),
+          user: users,
+          viewsCount: db.$count(videoViews, eq(videoViews.videoId, videos.id)),
+          likeCount: db.$count(
+            videoReactions,
+            and(
+              eq(videoReactions.videoId, videos.id),
+              eq(videoReactions.type, "like")
+            )
+          ),
+          dislikeCount: db.$count(
+            videoReactions,
+            and(
+              eq(videoReactions.videoId, videos.id),
+              eq(videoReactions.type, "dislike")
+            )
+          ),
+        })
+        .from(videos)
+        .innerJoin(users, eq(videos.userId, users.id))
+        .innerJoin(
+          videoSubscriptions,
+          eq(videoSubscriptions.createrId, users.id)
+        )
+        .where(
+          and(
+            eq(videos.visibility, "public"),
+            cursor
+              ? or(
+                  lt(videos.updatedAt, cursor.updatedAt),
+                  and(
+                    eq(videos.updatedAt, cursor.updatedAt),
+                    lt(videos.id, cursor.id)
+                  )
+                )
+              : undefined
+          )
+        )
+        .orderBy(desc(videos.updatedAt), desc(videos.id))
+        // Load 1 extra to check if there is more data
+        .limit(limit + 1);
+
+      const hasMoreData = data?.length > limit;
+
+      const items = hasMoreData ? data.slice(0, -1) : data;
+
+      const lastItem = items[items?.length - 1];
+
+      const nextCursor = hasMoreData
+        ? {
+            id: lastItem.id,
+            updatedAt: lastItem.updatedAt,
+          }
+        : null;
+
+      return {
+        items,
+        nextCursor,
+      };
+    }),
 });
