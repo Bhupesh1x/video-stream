@@ -35,6 +35,7 @@ export function useSubscriptions({
             toast.success("Unsubscribed");
 
             utils.video.getManySubscriptions.invalidate();
+            utils.video.getManySubscriptions.invalidate();
 
             if (fromVideoId) {
               utils.video.getOne.invalidate({ videoId: fromVideoId });

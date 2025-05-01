@@ -13,8 +13,8 @@ import {
 
 import { InfiniteScroll } from "@/components/InfiniteScroll";
 
-function HistorySectionSuspense() {
-  const [videos, query] = trpc.playlists.getHistory.useSuspenseInfiniteQuery(
+function LikedSectionSuspense() {
+  const [videos, query] = trpc.playlists.getLiked.useSuspenseInfiniteQuery(
     {
       limit: DEFAULT_LIMIT,
     },
@@ -41,7 +41,7 @@ function HistorySectionSuspense() {
   );
 }
 
-function HistorySectionSkeleton() {
+function LikedSectionSkeleton() {
   return (
     <div className="gap-4 gap-y-10 flex flex-col">
       {Array.from({ length: 6 })?.map((_, index) => (
@@ -51,11 +51,11 @@ function HistorySectionSkeleton() {
   );
 }
 
-export function HistorySection() {
+export function LikedSection() {
   return (
-    <Suspense fallback={<HistorySectionSkeleton />}>
+    <Suspense fallback={<LikedSectionSkeleton />}>
       <ErrorBoundary fallback={<p>Error</p>}>
-        <HistorySectionSuspense />
+        <LikedSectionSuspense />
       </ErrorBoundary>
     </Suspense>
   );
