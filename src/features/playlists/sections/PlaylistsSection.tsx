@@ -6,9 +6,12 @@ import { ErrorBoundary } from "react-error-boundary";
 import { trpc } from "@/trpc/client";
 import { DEFAULT_LIMIT } from "@/constants";
 
-import { VideoRowCardSkeleton } from "@/features/videos/components/VideoRowCard";
-
 import { InfiniteScroll } from "@/components/InfiniteScroll";
+
+import {
+  PlaylistGridCard,
+  PlaylistGridCardSkeleton,
+} from "../components/PlaylistGridCard";
 
 function PlaylistsSectionSuspense() {
   const [playlists, query] = trpc.playlists.getMany.useSuspenseInfiniteQuery(
@@ -22,8 +25,12 @@ function PlaylistsSectionSuspense() {
 
   return (
     <div>
-      <div className="gap-4 gap-y-10 flex flex-col">
-        {JSON.stringify(playlists)}
+      <div className="gap-4 gap-y-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 [@media(min-width:1920px)]:grid-cols-5 [@media(min-width:2200px)]:grid-cols-6">
+        {playlists?.pages
+          ?.flatMap((page) => page?.items)
+          ?.map((playlist) => (
+            <PlaylistGridCard key={playlist.id} playlist={playlist} />
+          ))}
       </div>
       <InfiniteScroll
         hasNextPage={query.hasNextPage}
@@ -36,9 +43,9 @@ function PlaylistsSectionSuspense() {
 
 function PlaylistsSectionSkeleton() {
   return (
-    <div className="gap-4 gap-y-10 flex flex-col">
-      {Array.from({ length: 6 })?.map((_, index) => (
-        <VideoRowCardSkeleton key={index} />
+    <div className="gap-4 gap-y-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 [@media(min-width:1920px)]:grid-cols-5 [@media(min-width:2200px)]:grid-cols-6">
+      {Array.from({ length: 8 })?.map((_, index) => (
+        <PlaylistGridCardSkeleton key={index} />
       ))}
     </div>
   );
