@@ -38,10 +38,12 @@ export function CreatePlaylistModal({ open, onOpenChange }: Props) {
     },
   });
 
+  const utils = trpc.useUtils();
   function onSubmit(values: z.infer<typeof formSchema>) {
     create.mutate(values, {
       onSuccess: () => {
         toast.success("Playlist created");
+        utils.playlists.getMany.invalidate();
         form.reset();
         onOpenChange(false);
       },
