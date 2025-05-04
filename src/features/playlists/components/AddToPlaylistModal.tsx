@@ -1,5 +1,6 @@
 "use client";
 
+import { toast } from "sonner";
 import { Loader2Icon, SquareCheckIcon, SquareIcon } from "lucide-react";
 
 import { trpc } from "@/trpc/client";
@@ -33,6 +34,44 @@ export function AddToPlaylistModal({ open, videoId, onOpenChange }: Props) {
     }
   );
 
+  const addVideo = trpc.playlists.addVideo.useMutation();
+  const removeVideo = trpc.playlists.removeVideo.useMutation();
+
+  const utils = trpc.useUtils();
+  function onAddVideo(playlistId: string, videoId: string) {
+    addVideo.mutate(
+      { playlistId, videoId },
+      {
+        onSuccess: () => {
+          toast.success("Video added to playlist");
+
+          utils.playlists.getMany.invalidate();
+          utils.playlists.getManyForVideo.invalidate({ videoId });
+        },
+        onError: () => {
+          toast.success("Failed to add video to playlist");
+        },
+      }
+    );
+  }
+
+  function onRemoveVideo(playlistId: string, videoId: string) {
+    removeVideo.mutate(
+      { playlistId, videoId },
+      {
+        onSuccess: () => {
+          toast.success("Video removed from playlist");
+
+          utils.playlists.getMany.invalidate();
+          utils.playlists.getManyForVideo.invalidate({ videoId });
+        },
+        onError: () => {
+          toast.success("Failed to remove video from playlist");
+        },
+      }
+    );
+  }
+
   return (
     <ResponsiveModal
       open={open}
@@ -54,6 +93,14 @@ export function AddToPlaylistModal({ open, videoId, onOpenChange }: Props) {
                   variant="ghost"
                   size="lg"
                   className="justify-start [&_svg]:size-5 p-0 px-1"
+                  onClick={() => {
+                    if (playlist.containsVideo) {
+                      onRemoveVideo(playlist.id, videoId);
+                    } else {
+                      onAddVideo(playlist.id, videoId);
+                    }
+                  }}
+                  disabled={addVideo.isPending || removeVideo.isPending}
                 >
                   {playlist.containsVideo ? (
                     <SquareCheckIcon />
@@ -63,14 +110,15 @@ export function AddToPlaylistModal({ open, videoId, onOpenChange }: Props) {
                   <span>{playlist.name}</span>
                 </Button>
               ))}
+
+            <InfiniteScroll
+              isManual
+              hasNextPage={hasNextPage}
+              fetchNextPage={fetchNextPage}
+              isFetchingNextPage={isFetchingNextPage}
+            />
           </div>
         )}
-        <InfiniteScroll
-          isManual
-          hasNextPage={hasNextPage}
-          fetchNextPage={fetchNextPage}
-          isFetchingNextPage={isFetchingNextPage}
-        />
       </div>
     </ResponsiveModal>
   );
