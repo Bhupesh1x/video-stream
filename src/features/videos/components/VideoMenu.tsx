@@ -5,8 +5,11 @@ import {
   Trash2Icon,
 } from "lucide-react";
 import { toast } from "sonner";
+import { useState } from "react";
 
 import { APP_URL } from "@/constants";
+
+import { AddToPlaylistModal } from "@/features/playlists/components/AddToPlaylistModal";
 
 import {
   DropdownMenu,
@@ -23,6 +26,8 @@ type Props = {
 };
 
 export function VideoMenu({ videoId, variant = "secondary", onRemove }: Props) {
+  const [isAddPlaylistModalOpen, setIsAddPlaylistModalOpen] = useState(false);
+
   function onShare() {
     const fullUrl = `${APP_URL}/videos/${videoId}`;
 
@@ -32,41 +37,48 @@ export function VideoMenu({ videoId, variant = "secondary", onRemove }: Props) {
   }
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant={variant}
-          className="rounded-full hover:bg-gray-200 transition shrink-0"
-          size="icon"
-        >
-          <MoreVerticalIcon className="size-5" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
-        <DropdownMenuItem
-          onClick={onShare}
-          className=" hover:!bg-gray-200 transition"
-        >
-          <ShareIcon className="size-4 mr-2" />
-          Share
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() => {}}
-          className=" hover:!bg-gray-200 transition"
-        >
-          <ListPlusIcon className="size-4 mr-2" />
-          Add to playlist
-        </DropdownMenuItem>
-        {onRemove ? (
+    <>
+      <AddToPlaylistModal
+        videoId={videoId}
+        open={isAddPlaylistModalOpen}
+        onOpenChange={setIsAddPlaylistModalOpen}
+      />
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant={variant}
+            className="rounded-full hover:bg-gray-200 transition shrink-0"
+            size="icon"
+          >
+            <MoreVerticalIcon className="size-5" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
           <DropdownMenuItem
-            onClick={() => {}}
+            onClick={onShare}
             className=" hover:!bg-gray-200 transition"
           >
-            <Trash2Icon className="size-4 mr-2" />
-            Remove
+            <ShareIcon className="size-4 mr-2" />
+            Share
           </DropdownMenuItem>
-        ) : null}
-      </DropdownMenuContent>
-    </DropdownMenu>
+          <DropdownMenuItem
+            onClick={() => setIsAddPlaylistModalOpen(true)}
+            className=" hover:!bg-gray-200 transition"
+          >
+            <ListPlusIcon className="size-4 mr-2" />
+            Add to playlist
+          </DropdownMenuItem>
+          {onRemove ? (
+            <DropdownMenuItem
+              onClick={() => {}}
+              className=" hover:!bg-gray-200 transition"
+            >
+              <Trash2Icon className="size-4 mr-2" />
+              Remove
+            </DropdownMenuItem>
+          ) : null}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </>
   );
 }
