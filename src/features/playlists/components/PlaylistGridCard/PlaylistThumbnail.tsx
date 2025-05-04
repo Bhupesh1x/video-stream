@@ -27,9 +27,9 @@ export function PlaylistThumbnail({ playlist, className }: Props) {
         <div className="relative aspect-video overflow-hidden rounded-xl w-full">
           <Image
             fill
-            src={"/images/placeholder.svg"}
+            src={playlist.thumbnailUrl || "/images/placeholder.svg"}
             alt={playlist.name}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-contain bg-gray-200"
           />
 
           {/* Hover layer */}
