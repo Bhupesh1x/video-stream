@@ -47,6 +47,7 @@ export function AddToPlaylistModal({ open, videoId, onOpenChange }: Props) {
 
           utils.playlists.getMany.invalidate();
           utils.playlists.getManyForVideo.invalidate({ videoId });
+          utils.playlists.getCustomPlayistVideos.invalidate({ playlistId });
         },
         onError: () => {
           toast.success("Failed to add video to playlist");
@@ -64,6 +65,7 @@ export function AddToPlaylistModal({ open, videoId, onOpenChange }: Props) {
 
           utils.playlists.getMany.invalidate();
           utils.playlists.getManyForVideo.invalidate({ videoId });
+          utils.playlists.getCustomPlayistVideos.invalidate({ playlistId });
         },
         onError: () => {
           toast.success("Failed to remove video from playlist");

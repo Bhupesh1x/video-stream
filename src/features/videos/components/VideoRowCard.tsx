@@ -135,7 +135,7 @@ export function VideoRowCard({ video, variant = "default" }: Props) {
             ) : null}
           </Link>
         </div>
-        <VideoMenu videoId={video.id} onRemove={() => {}} />
+        <VideoMenu videoId={video.id} />
       </div>
     </div>
   );
