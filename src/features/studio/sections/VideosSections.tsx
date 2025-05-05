@@ -97,9 +97,15 @@ function VideosSectionSuspence() {
                   <TableCell>
                     {format(new Date(video.createdAt), "d MMM yyyy")}
                   </TableCell>
-                  <TableCell className="text-right">views</TableCell>
-                  <TableCell className="text-right">comments</TableCell>
-                  <TableCell className="text-right pr-6">likes</TableCell>
+                  <TableCell className="text-right">
+                    {video?.viewsCount ?? 0}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {video?.commentsCount ?? 0}
+                  </TableCell>
+                  <TableCell className="text-right pr-6">
+                    {video?.likeCount ?? 0}
+                  </TableCell>
                 </TableRow>
               </Link>
             ))}
