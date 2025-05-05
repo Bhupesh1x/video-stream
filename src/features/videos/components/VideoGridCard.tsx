@@ -30,7 +30,7 @@ export function VideoGridCardSkeleton() {
   );
 }
 
-export function VideoGridCard({ video }: Props) {
+export function VideoGridCard({ video, onRemove }: Props) {
   const compactViews = useMemo(() => {
     return Intl.NumberFormat("en", {
       notation: "compact",
@@ -79,7 +79,7 @@ export function VideoGridCard({ video }: Props) {
               </div>
             </div>
           </div>
-          <VideoMenu videoId={video.id} />
+          <VideoMenu videoId={video.id} onRemove={onRemove} />
         </div>
       </div>
     </div>

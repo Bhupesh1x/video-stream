@@ -1,5 +1,6 @@
 "use client";
 
+import { toast } from "sonner";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 
@@ -29,13 +30,38 @@ function PlaylistIdSectionSuspense({ playlistId }: Props) {
       }
     );
 
+  const utils = trpc.useUtils();
+  const removeVideo = trpc.playlists.removeVideo.useMutation();
+
+  function onRemoveVideo(playlistId: string, videoId: string) {
+    removeVideo.mutate(
+      { playlistId, videoId },
+      {
+        onSuccess: () => {
+          toast.success("Video removed from playlist");
+
+          utils.playlists.getMany.invalidate();
+          utils.playlists.getManyForVideo.invalidate({ videoId });
+          utils.playlists.getCustomPlayistVideos.invalidate({ playlistId });
+        },
+        onError: () => {
+          toast.success("Failed to remove video from playlist");
+        },
+      }
+    );
+  }
+
   return (
     <div>
       <div className="gap-4 gap-y-10 flex flex-col">
         {videos?.pages
           ?.flatMap((page) => page?.items)
           ?.map((video) => (
-            <VideoRowCard key={video.id} video={video} />
+            <VideoRowCard
+              key={video.id}
+              video={video}
+              onRemove={() => onRemoveVideo(playlistId, video.id)}
+            />
           ))}
       </div>
       <InfiniteScroll

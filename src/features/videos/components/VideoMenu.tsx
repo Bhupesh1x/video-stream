@@ -70,7 +70,7 @@ export function VideoMenu({ videoId, variant = "secondary", onRemove }: Props) {
           </DropdownMenuItem>
           {onRemove ? (
             <DropdownMenuItem
-              onClick={() => {}}
+              onClick={onRemove}
               className=" hover:!bg-gray-200 transition"
             >
               <Trash2Icon className="size-4 mr-2" />

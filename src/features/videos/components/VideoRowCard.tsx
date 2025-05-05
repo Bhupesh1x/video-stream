@@ -38,7 +38,7 @@ export function VideoRowCardSkeleton() {
   );
 }
 
-export function VideoRowCard({ video, variant = "default" }: Props) {
+export function VideoRowCard({ video, variant = "default", onRemove }: Props) {
   const compactViews = useMemo(() => {
     return Intl.NumberFormat("en", {
       notation: "compact",
@@ -135,7 +135,7 @@ export function VideoRowCard({ video, variant = "default" }: Props) {
             ) : null}
           </Link>
         </div>
-        <VideoMenu videoId={video.id} />
+        <VideoMenu videoId={video.id} onRemove={onRemove} />
       </div>
     </div>
   );
