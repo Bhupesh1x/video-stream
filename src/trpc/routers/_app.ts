@@ -1,3 +1,4 @@
+import { usersRouter } from "@/features/users/server/procedures";
 import { videoRouter } from "@/features/videos/server/procedures";
 import { studioRouter } from "@/features/studio/server/procedures";
 import { searchRouter } from "@/features/search/server/procedures";
@@ -13,6 +14,7 @@ import { subscriptionsRouter } from "@/features/subscriptions/server/procedures"
 import { createTRPCRouter } from "../init";
 
 export const appRouter = createTRPCRouter({
+  user: usersRouter,
   video: videoRouter,
   studio: studioRouter,
   search: searchRouter,

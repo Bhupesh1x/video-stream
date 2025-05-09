@@ -11,6 +11,7 @@ const avatarVariants = cva("shrink-0", {
       xs: "h-4 w-4",
       sm: "h-6 w-6",
       lg: "h-10 w-10",
+      xlg: "h-16 w-16",
       xl: "h-[160px] w-[160px]",
     },
   },
