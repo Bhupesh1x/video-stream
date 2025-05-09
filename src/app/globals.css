@@ -150,6 +150,10 @@
   display: none;
 }
 
+.cl-userButtonPopoverFooter {
+  display: none;
+}
+
 .toast-description {
   color: black !important;
 }
