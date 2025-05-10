@@ -1,3 +1,4 @@
+import { DEFAULT_LIMIT } from "@/constants";
 import { HydrateClient, trpc } from "@/trpc/server";
 
 import { UserView } from "@/features/users/views/UserView";
@@ -14,6 +15,7 @@ async function UsersPage({ params }: Props) {
   const { userId } = await params;
 
   void trpc.user.getOne.prefetch({ id: userId });
+  void trpc.video.getMany.prefetch({ userId, limit: DEFAULT_LIMIT });
 
   return (
     <HydrateClient>
