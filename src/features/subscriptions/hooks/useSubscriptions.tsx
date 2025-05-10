@@ -43,6 +43,7 @@ export function useSubscriptions({
             }
           },
           onError: (error) => {
+            toast.error("Something went wrong! Failed to unsubscribe");
             if (error?.data?.code === "UNAUTHORIZED") {
               openSignIn();
             }
