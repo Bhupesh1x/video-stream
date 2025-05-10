@@ -70,6 +70,51 @@ export const ourFileRouter = {
 
       return { uploadedBy: metadata.user.id };
     }),
+  bannerUploader: f({
+    image: {
+      maxFileSize: "4MB",
+      maxFileCount: 1,
+    },
+  })
+    .middleware(async () => {
+      const { userId: clerkUserId } = await auth();
+
+      if (!clerkUserId) throw new UploadThingError("Unauthorized");
+
+      const [existingUser] = await db
+        .select()
+        .from(users)
+        .where(eq(users.clerkId, clerkUserId));
+
+      if (!existingUser) throw new UploadThingError("Unauthorized");
+
+      if (existingUser?.bannerKey) {
+        const uatpi = new UTApi();
+
+        uatpi.deleteFiles(existingUser.bannerKey);
+
+        await db
+          .update(users)
+          .set({
+            bannerUrl: null,
+            bannerKey: null,
+          })
+          .where(eq(users.id, existingUser.id));
+      }
+
+      return { ...existingUser };
+    })
+    .onUploadComplete(async ({ metadata, file }) => {
+      await db
+        .update(users)
+        .set({
+          bannerUrl: file.url,
+          bannerKey: file.key,
+        })
+        .where(eq(users.id, metadata.id));
+
+      return { uploadedBy: metadata.id };
+    }),
 } satisfies FileRouter;
 
 export type OurFileRouter = typeof ourFileRouter;
