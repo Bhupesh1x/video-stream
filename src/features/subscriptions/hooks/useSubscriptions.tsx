@@ -34,6 +34,7 @@ export function useSubscriptions({
           onSuccess: () => {
             toast.success("Unsubscribed");
 
+            utils.subscriptions.getMany.invalidate();
             utils.video.getManySubscriptions.invalidate();
             utils.user.getOne.invalidate({ id: creatorId });
 
@@ -55,6 +56,7 @@ export function useSubscriptions({
           onSuccess: () => {
             toast.success("Subscribed");
 
+            utils.subscriptions.getMany.invalidate();
             utils.video.getManySubscriptions.invalidate();
             utils.user.getOne.invalidate({ id: creatorId });
 
