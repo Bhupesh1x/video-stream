@@ -61,60 +61,56 @@ export const subscriptionsRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => {
-      try {
-        const { id: userId } = ctx.user;
-        const { limit, cursor } = input;
+      const { id: userId } = ctx.user;
+      const { limit, cursor } = input;
 
-        const data = await db
-          .select({
-            ...getTableColumns(subscriptions),
-            user: {
-              ...getTableColumns(users),
-              subscriberCount: db.$count(
-                subscriptions,
-                eq(subscriptions.creatorId, users.id)
-              ),
-            },
-          })
-          .from(subscriptions)
-          .innerJoin(users, eq(subscriptions.creatorId, users.id))
-          .where(
-            and(
-              eq(subscriptions.viewerId, userId),
-              cursor
-                ? or(
-                    lt(subscriptions.updatedAt, cursor.updatedAt),
-                    and(
-                      eq(subscriptions.updatedAt, cursor.updatedAt),
-                      lt(subscriptions.creatorId, cursor.creatorId)
-                    )
+      const data = await db
+        .select({
+          ...getTableColumns(subscriptions),
+          user: {
+            ...getTableColumns(users),
+            subscriberCount: db.$count(
+              subscriptions,
+              eq(subscriptions.creatorId, users.id)
+            ),
+          },
+        })
+        .from(subscriptions)
+        .innerJoin(users, eq(subscriptions.creatorId, users.id))
+        .where(
+          and(
+            eq(subscriptions.viewerId, userId),
+            cursor
+              ? or(
+                  lt(subscriptions.updatedAt, cursor.updatedAt),
+                  and(
+                    eq(subscriptions.updatedAt, cursor.updatedAt),
+                    lt(subscriptions.creatorId, cursor.creatorId)
                   )
-                : undefined
-            )
+                )
+              : undefined
           )
-          .orderBy(desc(subscriptions.updatedAt), desc(subscriptions.creatorId))
-          // Load 1 extra to check if there is more data
-          .limit(limit + 1);
+        )
+        .orderBy(desc(subscriptions.updatedAt), desc(subscriptions.creatorId))
+        // Load 1 extra to check if there is more data
+        .limit(limit + 1);
 
-        const hasMoreData = data?.length > limit;
+      const hasMoreData = data?.length > limit;
 
-        const items = hasMoreData ? data.slice(0, -1) : data;
+      const items = hasMoreData ? data.slice(0, -1) : data;
 
-        const lastItem = items[items?.length - 1];
+      const lastItem = items[items?.length - 1];
 
-        const nextCursor = hasMoreData
-          ? {
-              creatorId: lastItem.creatorId,
-              updatedAt: lastItem.updatedAt,
-            }
-          : null;
+      const nextCursor = hasMoreData
+        ? {
+            creatorId: lastItem.creatorId,
+            updatedAt: lastItem.updatedAt,
+          }
+        : null;
 
-        return {
-          items,
-          nextCursor,
-        };
-      } catch (error) {
-        console.log("error-bh", error);
-      }
+      return {
+        items,
+        nextCursor,
+      };
     }),
 });
