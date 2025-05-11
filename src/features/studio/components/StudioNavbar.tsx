@@ -15,7 +15,9 @@ export function StudioNavbar() {
         <Link prefetch href="/studio">
           <div className="flex items-center gap-1 p-4">
             <Image src="/images/logo.svg" alt="logo" height={32} width={32} />
-            <p className="font-semibold text-lg tracking-tight">Studio</p>
+            <p className="font-semibold text-lg tracking-tight hidden md:block">
+              Studio
+            </p>
           </div>
         </Link>
       </div>
