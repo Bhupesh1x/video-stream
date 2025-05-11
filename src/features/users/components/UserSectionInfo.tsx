@@ -73,7 +73,9 @@ export function UserSectionInfo({ user }: Props) {
           <div className="hidden md:block">
             {clerkId === user?.clerkId ? (
               <Button asChild variant="outline" className="rounded-full mt-2">
-                <Link href="/studio">Go to studio</Link>
+                <Link prefetch href="/studio">
+                  Go to studio
+                </Link>
               </Button>
             ) : (
               <SubscribeButton
@@ -93,7 +95,9 @@ export function UserSectionInfo({ user }: Props) {
             variant="outline"
             className="w-full rounded-full mt-3"
           >
-            <Link href="/studio">Go to studio</Link>
+            <Link prefetch href="/studio">
+              Go to studio
+            </Link>
           </Button>
         ) : (
           <SubscribeButton

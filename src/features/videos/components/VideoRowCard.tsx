@@ -58,6 +58,7 @@ export function VideoRowCard({ video, variant = "default", onRemove }: Props) {
       }`}
     >
       <Link
+        prefetch
         href={`/videos/${video.id}`}
         className={`reative ${variant === "default" ? "w-[68%]" : "w-[80%]"}`}
       >
@@ -71,7 +72,7 @@ export function VideoRowCard({ video, variant = "default", onRemove }: Props) {
       {/* </Link> */}
       <div className="flex justify-between gap-2 w-full">
         <div>
-          <Link href={`/videos/${video.id}`}>
+          <Link prefetch href={`/videos/${video.id}`}>
             <h3
               className={`font-semibold line-clamp-2 ${
                 variant === "compact" ? "size-sm" : "size-base"
@@ -80,7 +81,7 @@ export function VideoRowCard({ video, variant = "default", onRemove }: Props) {
               {video?.title || "Title"}
             </h3>
           </Link>
-          <Link href={`/videos/${video.id}`}>
+          <Link prefetch href={`/videos/${video.id}`}>
             {variant === "default" ? (
               <p className="text-xs text-muted-foreground my-1">
                 {video?.viewsCount ?? 0} views • {video?.likeCount ?? 0} likes
@@ -89,7 +90,7 @@ export function VideoRowCard({ video, variant = "default", onRemove }: Props) {
           </Link>
           {variant === "default" ? (
             <>
-              <Link href={`/users/${video?.user?.id}`}>
+              <Link prefetch href={`/users/${video?.user?.id}`}>
                 <div className="flex items-center gap-x-2">
                   <UserAvatar
                     imageUrl={video?.user?.imageUrl || ""}
@@ -104,7 +105,7 @@ export function VideoRowCard({ video, variant = "default", onRemove }: Props) {
                   </p>
                 </div>
               </Link>
-              <Link href={`/videos/${video.id}`}>
+              <Link prefetch href={`/videos/${video.id}`}>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <p className="text-xs text-muted-foreground w-fit line-clamp-2 mt-2">
@@ -122,12 +123,12 @@ export function VideoRowCard({ video, variant = "default", onRemove }: Props) {
               </Link>
             </>
           ) : null}
-          <Link href={`/users/${video?.user?.id}`}>
+          <Link prefetch href={`/users/${video?.user?.id}`}>
             {variant === "compact" ? (
               <UserInfo name={video?.user?.name || "User"} size="sm" />
             ) : null}
           </Link>
-          <Link href={`/videos/${video.id}`}>
+          <Link prefetch href={`/videos/${video.id}`}>
             {variant === "compact" ? (
               <p className="text-sm text-muted-foreground">
                 {compactViews} views • {compactLikes} likes

@@ -31,7 +31,11 @@ export function StudioSidebar() {
                 tooltip="Content"
                 isActive={pathname === "/studio"}
               >
-                <Link href="/studio" className="flex items-center gap-4">
+                <Link
+                  prefetch
+                  href="/studio"
+                  className="flex items-center gap-4"
+                >
                   <VideoIcon className="size-5" />
                   <span className="text-sm">Content</span>
                 </Link>
@@ -42,7 +46,7 @@ export function StudioSidebar() {
 
             <SidebarMenuItem>
               <SidebarMenuButton asChild tooltip="Exit studio">
-                <Link href="/" className="flex items-center gap-4">
+                <Link prefetch href="/" className="flex items-center gap-4">
                   <LogOutIcon className="size-5" />
                   <span className="text-sm">Exit studio</span>
                 </Link>

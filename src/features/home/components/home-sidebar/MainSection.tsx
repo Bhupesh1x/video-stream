@@ -50,7 +50,11 @@ export function MainSection() {
                 }
               }}
             >
-              <Link href={route.url} className="flex items-center gap-4">
+              <Link
+                prefetch
+                href={route.url}
+                className="flex items-center gap-4"
+              >
                 <route.icon />
                 <span className="text-sm">{route.title}</span>
               </Link>

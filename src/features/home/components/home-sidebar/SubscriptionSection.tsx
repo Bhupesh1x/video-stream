@@ -54,6 +54,7 @@ export function SubscriptionSection() {
                     isActive={pathname === `/users/${subscription?.creatorId}`}
                   >
                     <Link
+                      prefetch
                       href={`/users/${subscription?.creatorId}`}
                       className="flex items-center gap-4"
                     >
@@ -77,7 +78,11 @@ export function SubscriptionSection() {
               tooltip="All subscriptions"
               isActive={pathname === `/subscription`}
             >
-              <Link href="/subscriptions" className="flex items-center gap-4">
+              <Link
+                prefetch
+                href="/subscriptions"
+                className="flex items-center gap-4"
+              >
                 <ListIcon className="size-4" />
                 <span className="text-sm">All Subscriptions</span>
               </Link>

@@ -406,7 +406,7 @@ function VideoFormSectionSuspence({ videoId }: Props) {
                   <div>
                     <p className="text-xs text-muted-foreground">Video link</p>
                     <div className="flex items-center gapx-x-1">
-                      <Link href={`/videos/${video.id}`}>
+                      <Link prefetch href={`/videos/${video.id}`}>
                         <p className="text-blue-500 line-clamp-1 text-sm">
                           {fullUrl}
                         </p>

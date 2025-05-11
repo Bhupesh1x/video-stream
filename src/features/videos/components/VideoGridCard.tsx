@@ -44,7 +44,7 @@ export function VideoGridCard({ video, onRemove }: Props) {
   return (
     <div className="flex justify-between gap-2 w-full">
       <div className="w-full flex flex-col gap-2">
-        <Link href={`/videos/${video.id}`}>
+        <Link prefetch href={`/videos/${video.id}`}>
           <VideoThumbnail
             title={video.title}
             duration={video?.duration ?? 0}
@@ -55,7 +55,7 @@ export function VideoGridCard({ video, onRemove }: Props) {
         <div className="flex gap-2 w-full justify-between">
           <div>
             <div className="flex gap-2">
-              <Link href={`/users/${video.user.id}`}>
+              <Link prefetch href={`/users/${video.user.id}`}>
                 <UserAvatar
                   imageUrl={video.user?.imageUrl || ""}
                   name={video.user?.name}
@@ -63,15 +63,15 @@ export function VideoGridCard({ video, onRemove }: Props) {
               </Link>
 
               <div>
-                <Link href={`/videos/${video.id}`}>
+                <Link prefetch href={`/videos/${video.id}`}>
                   <p className="font-semibold line-clamp-2" title={video.title}>
                     {video.title}
                   </p>
                 </Link>
-                <Link href={`/users/${video.user.id}`}>
+                <Link prefetch href={`/users/${video.user.id}`}>
                   <UserInfo name={video?.user?.name || ""} />
                 </Link>
-                <Link href={`/videos/${video.id}`}>
+                <Link prefetch href={`/videos/${video.id}`}>
                   <p className="text-muted-foreground my-1">
                     {compactViews} views • {compactDate ?? ""}
                   </p>

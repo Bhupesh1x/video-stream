@@ -30,7 +30,7 @@ export function PlaylistGridCardSkeleton() {
 
 export function PlaylistGridCard({ playlist }: Props) {
   return (
-    <Link href={`/playlists/${playlist.id}`}>
+    <Link prefetch href={`/playlists/${playlist.id}`}>
       <div className="group space-y-2">
         <PlaylistThumbnail playlist={playlist} />
         <PlaylistInfo playlist={playlist} />

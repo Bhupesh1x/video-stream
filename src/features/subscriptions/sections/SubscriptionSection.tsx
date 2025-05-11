@@ -52,6 +52,7 @@ function SubscriptionSectionSuspense() {
           ?.flatMap((page) => page?.items)
           ?.map((subscription) => (
             <Link
+              prefetch
               key={subscription?.creatorId}
               href={subscription?.creatorId || "#"}
             >

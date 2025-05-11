@@ -26,7 +26,7 @@ export function VideoOwner({ user, videoId }: Props) {
 
   return (
     <div className="flex items-center justify-between gap-4">
-      <Link href={`/users/${user.id}`}>
+      <Link prefetch href={`/users/${user.id}`}>
         <div className="flex items-center gap-x-2">
           <UserAvatar
             imageUrl={user?.imageUrl || ""}
@@ -44,7 +44,9 @@ export function VideoOwner({ user, videoId }: Props) {
 
       {clerkUserId === user?.clerkId ? (
         <Button className="rounded-full" asChild>
-          <Link href={`/studio/videos/${videoId}`}>Edit video</Link>
+          <Link prefetch href={`/studio/videos/${videoId}`}>
+            Edit video
+          </Link>
         </Button>
       ) : (
         <SubscribeButton

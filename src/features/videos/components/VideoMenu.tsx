@@ -18,6 +18,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button, ButtonProps } from "@/components/ui/button";
+import { useAuth, useClerk } from "@clerk/nextjs";
 
 type Props = {
   videoId: string;
@@ -26,6 +27,9 @@ type Props = {
 };
 
 export function VideoMenu({ videoId, variant = "secondary", onRemove }: Props) {
+  const { isSignedIn } = useAuth();
+  const { openSignIn } = useClerk();
+
   const [isAddPlaylistModalOpen, setIsAddPlaylistModalOpen] = useState(false);
 
   function onShare() {
@@ -34,6 +38,14 @@ export function VideoMenu({ videoId, variant = "secondary", onRemove }: Props) {
     navigator.clipboard.writeText(fullUrl || "");
 
     toast.success("Link copied to the clipboard");
+  }
+
+  function onAddToPlaylistClick() {
+    if (!isSignedIn) {
+      return openSignIn();
+    }
+
+    setIsAddPlaylistModalOpen(true);
   }
 
   return (
@@ -62,7 +74,7 @@ export function VideoMenu({ videoId, variant = "secondary", onRemove }: Props) {
             Share
           </DropdownMenuItem>
           <DropdownMenuItem
-            onClick={() => setIsAddPlaylistModalOpen(true)}
+            onClick={onAddToPlaylistClick}
             className=" hover:!bg-gray-200 transition"
           >
             <ListPlusIcon className="size-4 mr-2" />
